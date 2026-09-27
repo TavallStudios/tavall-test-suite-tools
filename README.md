@@ -126,13 +126,13 @@ For this repository, root `check` depends on each module/plugin `check`. For con
 
 | Surface | Sync State | Location | Last Updated | Evidence |
 | --- | --- | --- | --- | --- |
-| GitHub | `PRIMARY` | `TavallStudios/Tavall-Architecture-Tests/README.md` | 2026-09-27 12:51 PM PDT | __PR_URL__ |
-| Notion | `NOT_APPLICABLE` | — | 2026-09-27 12:51 PM PDT | README routing surface; no 1:1 twin is assigned. |
+| GitHub | `PRIMARY` | `TavallStudios/Tavall-Architecture-Tests/README.md` | 2026-09-27 12:59 PM PDT | [PR #16](https://github.com/TavallStudios/Tavall-Architecture-Tests/pull/16) |
+| Notion | `NOT_APPLICABLE` | — | 2026-09-27 12:59 PM PDT | README routing surface; no 1:1 twin is assigned. |
 
 ### Update History
 
 | Timestamp | Surface | Event | Location | Previous Location | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 2026-09-27 12:51 PM PDT | GitHub | `UPDATED` | `TavallStudios/Tavall-Architecture-Tests/README.md` | `TavallStudios/Tavall-Architecture-Tests/README.md` | __PR_URL__ | Added a public front door and current module map while removing internal Maven destination details. |
+| 2026-09-27 12:59 PM PDT | GitHub | `UPDATED` | `TavallStudios/Tavall-Architecture-Tests/README.md` | `TavallStudios/Tavall-Architecture-Tests/README.md` | [PR #16](https://github.com/TavallStudios/Tavall-Architecture-Tests/pull/16) | Added a public front door and current module map while removing internal Maven destination details. |
 
 </details>
