@@ -1,14 +1,31 @@
 # Tavall Architecture Tests
 
-This repository is the canonical executable architecture-test layer for Tavall Studios. `tavall-docs` owns the written architecture policy; this repository turns reusable parts of that policy into tests that consumer repositories actually execute.
+Reusable, opt-in Java architecture rules and a Gradle plugin for checking Tavall architecture boundaries in consumer builds.
 
-## Consumer contract
+## Why Tavall Architecture Tests
+
+- Reuse the same architecture checks across repositories without copying rule source.
+- Inspect real consumer production classes and source through the consumer's test-suite boundary.
+- Select only the rule artifacts a repository needs.
+
+## Features
+
+- Canonical rule API and source/class analysis engine.
+- Optional rule modules for naming/source structure, DI, registries, cache, databases, runtime support, and web.
+- Gradle plugin `org.tavall.architecture-tests` for consumer task configuration.
+- Migration-debt support that tolerates known findings temporarily while failing on new or obsolete entries.
+
+## Quick Start
+
+Add the plugin and selected rule modules to a repository testing suite. The [Consumer contract](#consumer-contract) below shows package resolution and the required Gradle wiring.
+
+## Consumer Contract
 
 Do not copy canonical test source into consumers. A repository's canonical testing suite (`*-test-suite`, or the equivalent root verification suite for a single-module repository) consumes this repository's published Gradle plugin/modules and feeds the real production modules it owns through that boundary.
 
 The testing suite is the repository-level architecture verification boundary. Production subprojects do not each need to apply and execute a duplicate architecture gate.
 
-Because the plugin is published through GitHub Packages, consumers resolve its plugin marker from this repository in `settings.gradle.kts`:
+Resolve the plugin marker from GitHub Packages in `settings.gradle.kts`:
 
 ```kotlin
 pluginManagement {
@@ -24,7 +41,7 @@ pluginManagement {
 }
 ```
 
-Then enable canonical architecture execution in the repository testing suite and declare the production projects it owns:
+Enable canonical architecture execution in the repository testing suite and declare the production projects it owns:
 
 ```kotlin
 plugins {
@@ -33,13 +50,7 @@ plugins {
 
 architectureTests {
     modules.set(listOf("core", "patterns", "di"))
-    targetProjects.set(
-        listOf(
-            ":backend-api",
-            ":runtime",
-            ":discord",
-        )
-    )
+    targetProjects.set(listOf(":backend-api", ":runtime", ":discord"))
 }
 
 rootProject.tasks.named("check") {
@@ -47,28 +58,52 @@ rootProject.tasks.named("check") {
 }
 ```
 
-The plugin registers `architectureTest`, runs it on JUnit Platform, compiles every configured target, and points the canonical engine at those targets' compiled production classes, Java source roots, and runtime classpaths. The suite therefore validates the same `main` types that the repository actually builds and ships.
+The plugin registers `architectureTest`, runs it on JUnit Platform, compiles every configured target, and points the canonical engine at the target modules' compiled production classes, Java source roots, and runtime classpaths. If `targetProjects` is empty, the plugin preserves the single-project fallback.
 
-If `targetProjects` is empty, the plugin preserves the single-project fallback and inspects the project that applies it. This is useful for genuinely single-module repositories, but repository test-suite consumption is the Tavall-wide default.
+Selecting a rule module changes executable verification. `core` is always included; other rule modules add rules through the `ArchitectureRule` service-provider contract. The consumer root `check` must depend on the repository testing suite.
 
-Selecting a rule module changes executable verification; it is not merely a dependency declaration. When `GITHUB_TOKEN` is available, the plugin also adds the architecture-test package repository for its module artifacts.
+## Project Structure
 
-Canonical module artifacts are intentionally opt-in rather than one giant `all` artifact:
+Tavall-Architecture-Tests/  
+├── modules/  
+│   ├── [core](modules/core/README.md)  
+│   ├── [patterns](modules/patterns/README.md)  
+│   ├── [di](modules/di/README.md)  
+│   ├── [registry](modules/registry/README.md)  
+│   ├── [cache](modules/cache/README.md)  
+│   ├── [database](modules/database/README.md)  
+│   ├── [runtime](modules/runtime/README.md)  
+│   └── [web](modules/web/README.md)  
+└── [gradle-plugin](gradle-plugin/README.md)
+## Documentation
 
-- `org.tavall:tavall-architecture-core`
-- `org.tavall:tavall-architecture-patterns`
-- `org.tavall:tavall-architecture-di`
-- `org.tavall:tavall-architecture-registry`
-- `org.tavall:tavall-architecture-cache`
-- `org.tavall:tavall-architecture-database`
-- `org.tavall:tavall-architecture-runtime`
-- `org.tavall:tavall-architecture-web`
+- [Contribution guide](CONTRIBUTING.md).
+- [Architecture Tests progression evidence](docs/progression/ARCHITECTURE_TESTS_PROGRESSION.md) — audited implementation and validation record.
+- [Tavall Docs Git Workflow](https://github.com/TavallStudios/tavall-docs/blob/main/docs/quality/GIT_WORKFLOW.md) — shared contribution and review policy.
 
-`core` is always included by the plugin. Other executable modules add rules through the `ArchitectureRule` service-provider contract. Tavall-library compile dependencies are compile-only in architecture modules so the gate inspects the consumer's checked-in/runtime dependency versions instead of forcing architecture-test copies of those libraries onto the consumer test runtime. `runtime` supplies shared runtime-test support; product/runtime simulations that require Paper, Discord, Redis, PostgreSQL, or another real runtime remain owned by the consumer repository's testing suite.
+## Requirements / Compatibility
 
-`tavall-docs` remains the human-readable architecture authority. This repository owns only the mechanically enforceable subset it actually implements. Repository-local tests may extend the canonical suite for product behavior, but they must not fork reusable Tavall-wide rules into incompatible copies.
+- JDK 25 and Gradle Wrapper versions are set by this repository's build.
+- Consumer builds need GitHub Packages credentials to resolve the artifacts.
+- Select only rule artifacts relevant to the consumer's dependencies.
 
-## Migration debt
+## Building From Source
+
+Run `./gradlew check` with the repository's configured Java toolchain.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) and the shared review policy linked above.
+
+## License
+
+No license file is currently tracked in this repository. Contact the maintainers before redistributing or reusing this code.
+
+## Publishing
+
+Every current rule module and the Gradle plugin publish Gradle-compatible Maven artifacts to this repository's GitHub Packages feed. Supply `GITHUB_TOKEN` and `GITHUB_ACTOR` when resolving or publishing artifacts.
+
+## Migration Debt
 
 Consumers may point the plugin at a temporary debt file:
 
@@ -78,16 +113,26 @@ architectureTests {
 }
 ```
 
-Each non-comment line is `<rule-id>|<subject>`. A matching current violation is tolerated temporarily. New violations fail. A debt entry that no longer corresponds to a real violation also fails, forcing the baseline to shrink instead of becoming an immortal ignore list.
+Each non-comment line is `<rule-id>|<subject>`. Matching current findings are temporarily tolerated. New violations and entries that no longer match a real finding fail.
 
-## Canonical snapshots
+## Validation Boundary
 
-The historical `repositories/` tree remains provenance for the original Project Novus architecture tests and `manifest/sources.json` pins imported blobs. Those snapshots are not the consumer execution mechanism.
+For this repository, root `check` depends on each module/plugin `check`. For consumers, the test-suite `check` depends on `architectureTest`, and root `check` must depend on that suite. Product/runtime simulations remain owned by the consumer repository.
 
-## Publishing
+<details>
+<summary>Documentation Update State</summary>
 
-Every module and the Gradle plugin publish as Gradle-compatible Maven artifacts to the `Tavall-Architecture-Tests` GitHub Packages repository. Supply `GITHUB_TOKEN`/`GITHUB_ACTOR` when resolving or publishing package artifacts. Tavall local execution can also set `TAVALL_PRIVATE_MAVEN_REPOSITORY` to publish exact snapshot artifacts to its private DEVELOPMENT Maven repository.
+### Current Locations
 
-## Validation boundary
+| Surface | Sync State | Location | Last Updated | Evidence |
+| --- | --- | --- | --- | --- |
+| GitHub | `PRIMARY` | `TavallStudios/Tavall-Architecture-Tests/README.md` | 2026-09-27 12:51 PM PDT | __PR_URL__ |
+| Notion | `NOT_APPLICABLE` | — | 2026-09-27 12:51 PM PDT | README routing surface; no 1:1 twin is assigned. |
 
-For this repository, root `check` depends on every module/plugin `check`. For consumers, the repository test suite's `check` depends on `architectureTest`, and the repository root `check` must depend on that suite. Local CI/DI and promotion checks therefore cross one canonical suite boundary while still inspecting all declared production modules.
+### Update History
+
+| Timestamp | Surface | Event | Location | Previous Location | Evidence | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| 2026-09-27 12:51 PM PDT | GitHub | `UPDATED` | `TavallStudios/Tavall-Architecture-Tests/README.md` | `TavallStudios/Tavall-Architecture-Tests/README.md` | __PR_URL__ | Added a public front door and current module map while removing internal Maven destination details. |
+
+</details>
