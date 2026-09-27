@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "canonicalRepository": "TavallStudios/Tavall-Architecture-Tests",
+  "canonicalRepository": "TavallStudios/tavall-test-suite-tools",
   "imports": [
     {
       "repository": "TavallStudios/tavall-mc",

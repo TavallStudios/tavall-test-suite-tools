@@ -74,7 +74,7 @@ subprojects {
                 if (token.isPresent) {
                     maven {
                         name = "GitHubPackages"
-                        url = uri("https://maven.pkg.github.com/TavallStudios/Tavall-Architecture-Tests")
+                        url = uri("https://maven.pkg.github.com/TavallStudios/tavall-test-suite-tools")
                         credentials {
                             username = providers.environmentVariable("GITHUB_ACTOR").orElse("github").get()
                             password = token.get()

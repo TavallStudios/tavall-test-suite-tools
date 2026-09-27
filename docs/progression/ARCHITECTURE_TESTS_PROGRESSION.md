@@ -5,7 +5,7 @@
 > **Must Not Define:** Written architecture policy (owned by `tavall-docs`), product-specific behavior (owned by consumer repositories)  
 > **Current Status:** Production Canonical / Reusable Gradle Plugin & Modules Published / Active Across Consumers  
 > **Last Audited Producer Commit:** `3e71575`  
-> **Canonical Repository:** `TavallStudios/Tavall-Architecture-Tests`
+> **Canonical Repository:** `TavallStudios/tavall-test-suite-tools`
 
 ## 1. About
 
@@ -18,7 +18,7 @@ Tracks the evolution and adoption of Tavall Studios' canonical executable archit
 The division of authority is explicit:
 
 - **Written Policy (`tavall-docs`)**: Canonical written architecture rules, design standards, module boundaries, and quality requirements.
-- **Executable Enforcement (`Tavall-Architecture-Tests`)**: Reusable ArchUnit and AST-based rule implementations packaged as Gradle plugin and modular libraries.
+- **Executable Enforcement (`tavall-test-suite-tools`)**: Reusable ArchUnit and AST-based rule implementations packaged as Gradle plugin and modular libraries.
 - **Consumer Execution (Consumer Repositories)**: Each repository's canonical testing suite (`*-test-suite`, or root verification suite) applies `org.tavall.architecture-tests` and declares its production targets.
 - **Historical Provenance (`repositories/`, `manifest/sources.json`)**: Preserved historical snapshots and imported commit hashes from Project Novus. These provide provenance only, not execution authority.
 
@@ -51,6 +51,6 @@ The division of authority is explicit:
 ## 5. Validation and Acceptance Gates
 
 1. **Standalone Suite Validation**: Root `./gradlew check` validates all rule modules and executes Gradle plugin functional tests.
-2. **Package Publication Gate**: All artifacts publish to `TavallStudios/Tavall-Architecture-Tests` on GitHub Packages with verified POMs and Gradle metadata.
+2. **Package Publication Gate**: All artifacts publish to `TavallStudios/tavall-test-suite-tools` on GitHub Packages with verified POMs and Gradle metadata.
 3. **Consumer Verification Gate**: Consumers execute `architectureTest` through their repository test-suite boundary; failure blocks local CI and PR promotion.
 4. **Temporary Debt Gate**: Deprecated or legacy patterns permitted temporarily via `config/architecture-debt.txt`; non-matching entries cause immediate build failure to prevent debt creep.

@@ -1,7 +1,7 @@
 version: 2
 
 source:
-  repository: TavallStudios/Tavall-Architecture-Tests
+  repository: TavallStudios/tavall-test-suite-tools
   provider: github
 
 build:
