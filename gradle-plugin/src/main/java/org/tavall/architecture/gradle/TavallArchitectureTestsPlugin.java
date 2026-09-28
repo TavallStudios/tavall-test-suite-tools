@@ -23,7 +23,7 @@ import java.util.Set;
 
 public final class TavallArchitectureTestsPlugin implements Plugin<Project> {
     private static final String PACKAGES_URL =
-            "https://maven.pkg.github.com/TavallStudios/Tavall-Architecture-Tests";
+            "https://maven.pkg.github.com/TavallStudios/tavall-test-suite-tools";
     private static final Set<String> SUPPORTED_MODULES = Set.of(
             "core", "patterns", "di", "registry", "cache", "database", "runtime", "web"
     );
@@ -62,6 +62,7 @@ public final class TavallArchitectureTestsPlugin implements Plugin<Project> {
                 task -> {
                     task.setDescription("Materializes the canonical JUnit entrypoint from tavall-architecture-core.");
                     task.setGroup("verification");
+                    task.dependsOn(moduleArtifacts.getBuildDependencies());
                     task.into(project.getLayout().getBuildDirectory().dir("tavall-architecture-tests/classes"));
                     task.from(project.provider(() -> moduleArtifacts.getFiles().stream()
                             .filter(file -> file.getName().startsWith("tavall-architecture-core-"))
