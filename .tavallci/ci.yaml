@@ -61,4 +61,4 @@ checks:
   quality:
     executor: gradle
     tasks:
-      - check
+      - build
