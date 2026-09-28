@@ -1,6 +1,6 @@
-# Tavall Architecture Tests
+# Tavall Test Suite Tools
 
-This repository is the canonical executable architecture-test layer for Tavall Studios. `tavall-docs` owns the written architecture policy; this repository turns reusable parts of that policy into tests that consumer repositories actually execute.
+This repository provides Tavall Studios' canonical executable architecture-test tooling. `tavall-docs` owns the written architecture policy; this repository turns reusable parts of that policy into tests that consumer repositories actually execute.
 
 ## Consumer contract
 
@@ -13,7 +13,7 @@ Because the plugin is published through GitHub Packages, consumers resolve its p
 ```kotlin
 pluginManagement {
     repositories {
-        maven("https://maven.pkg.github.com/TavallStudios/Tavall-Architecture-Tests") {
+        maven("https://maven.pkg.github.com/TavallStudios/tavall-test-suite-tools") {
             credentials {
                 username = System.getenv("GITHUB_ACTOR") ?: "github"
                 password = System.getenv("GITHUB_TOKEN")
