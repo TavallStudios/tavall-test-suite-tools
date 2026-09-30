@@ -1,10 +1,10 @@
-# Tavall Architecture Tests Progression
+# Tavall Test Suite Tools Progression
 
-> **Document Type:** System Progression  
-> **Source of Truth For:** Audited provenance, implementation, publication, and consumer adoption progression for the canonical Tavall Architecture Tests  
-> **Must Not Define:** Written architecture policy (owned by `tavall-docs`), product-specific behavior (owned by consumer repositories)  
-> **Current Status:** Production Canonical / Reusable Gradle Plugin & Modules Published / Active Across Consumers  
-> **Last Audited Producer Commit:** `3e71575`  
+> **Document Type:** System Progression
+> **Source of Truth For:** Audited provenance, implementation, publication, and consumer adoption progression for the canonical Tavall Test Suite Tools
+> **Must Not Define:** Written architecture policy (owned by `tavall-docs`), product-specific behavior (owned by consumer repositories)
+> **Current Status:** Production Canonical / Reusable Gradle Plugin & Modules Published / Active Across Consumers
+> **Last Audited Producer Commit:** `3e71575`
 > **Canonical Repository:** `TavallStudios/tavall-test-suite-tools`
 
 ## 1. About
