@@ -1,4 +1,4 @@
-# Tavall Architecture Tests Staging
+# Tavall Test Suite Tools Staging
 
 This file records the persistent repository/release staging boundary for the
 canonical architecture-test repository.

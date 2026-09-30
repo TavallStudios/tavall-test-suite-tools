@@ -1,4 +1,4 @@
-# Contributing to Tavall Architecture Tests
+# Contributing to Tavall Test Suite Tools
 
 This repository is the canonical executable source for Tavall Studios architecture tests.
 

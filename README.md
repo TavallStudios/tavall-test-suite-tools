@@ -1,8 +1,8 @@
-# Tavall Architecture Tests
+# Tavall Test Suite Tools
 
-Reusable, opt-in Java architecture rules and a Gradle plugin for checking Tavall architecture boundaries in consumer builds.
+This repository provides Tavall Studios' canonical executable architecture-test tooling as reusable, opt-in Java rules and a Gradle plugin. `tavall-docs` owns the written architecture policy; this repository turns reusable parts of that policy into tests that consumer repositories actually execute.
 
-## Why Tavall Architecture Tests
+## Why Tavall Test Suite Tools
 
 - Reuse the same architecture checks across repositories without copying rule source.
 - Inspect real consumer production classes and source through the consumer's test-suite boundary.
@@ -30,7 +30,7 @@ Resolve the plugin marker from GitHub Packages in `settings.gradle.kts`:
 ```kotlin
 pluginManagement {
     repositories {
-        maven("https://maven.pkg.github.com/TavallStudios/Tavall-Architecture-Tests") {
+        maven("https://maven.pkg.github.com/TavallStudios/tavall-test-suite-tools") {
             credentials {
                 username = System.getenv("GITHUB_ACTOR") ?: "github"
                 password = System.getenv("GITHUB_TOKEN")
@@ -64,16 +64,16 @@ Selecting a rule module changes executable verification. `core` is always includ
 
 ## Project Structure
 
-Tavall-Architecture-Tests/  
-├── modules/  
-│   ├── [core](modules/core/README.md)  
-│   ├── [patterns](modules/patterns/README.md)  
-│   ├── [di](modules/di/README.md)  
-│   ├── [registry](modules/registry/README.md)  
-│   ├── [cache](modules/cache/README.md)  
-│   ├── [database](modules/database/README.md)  
-│   ├── [runtime](modules/runtime/README.md)  
-│   └── [web](modules/web/README.md)  
+tavall-test-suite-tools/\
+├── modules/\
+│   ├── [core](modules/core/README.md)\
+│   ├── [patterns](modules/patterns/README.md)\
+│   ├── [di](modules/di/README.md)\
+│   ├── [registry](modules/registry/README.md)\
+│   ├── [cache](modules/cache/README.md)\
+│   ├── [database](modules/database/README.md)\
+│   ├── [runtime](modules/runtime/README.md)\
+│   └── [web](modules/web/README.md)\
 └── [gradle-plugin](gradle-plugin/README.md)
 ## Documentation
 
@@ -119,6 +119,12 @@ Each non-comment line is `<rule-id>|<subject>`. Matching current findings are te
 
 For this repository, root `check` depends on each module/plugin `check`. For consumers, the test-suite `check` depends on `architectureTest`, and root `check` must depend on that suite. Product/runtime simulations remain owned by the consumer repository.
 
+## Publishing and Tavall CI
+
+Every module and the Gradle plugin publish as Gradle-compatible Maven artifacts for public distribution. GitHub Packages publication is a publication surface; it is not Tavall CI's internal source-resolution authority.
+
+Tavall CI composes this repository at an exact source SHA. The Gradle plugin version and module artifact version are aligned through the `tavallArchitectureVersion` Gradle property. When another exact source build needs architecture modules, Tavall CI publishes only the declared modules to the operation's `TAVALL_CI_DEPENDENCY_REPOSITORY`, then resolves them from that job-scoped file repository. The path is per job and is not Maven Local or a durable shared package authority.
+
 <details>
 <summary>Documentation Update State</summary>
 
@@ -126,13 +132,13 @@ For this repository, root `check` depends on each module/plugin `check`. For con
 
 | Surface | Sync State | Location | Last Updated | Evidence |
 | --- | --- | --- | --- | --- |
-| GitHub | `PRIMARY` | `TavallStudios/Tavall-Architecture-Tests/README.md` | 2026-09-27 12:59 PM PDT | [PR #16](https://github.com/TavallStudios/Tavall-Architecture-Tests/pull/16) |
+| GitHub | `PRIMARY` | `TavallStudios/tavall-test-suite-tools/README.md` | 2026-09-27 12:59 PM PDT | [PR #16](https://github.com/TavallStudios/tavall-test-suite-tools/pull/16) |
 | Notion | `NOT_APPLICABLE` | — | 2026-09-27 12:59 PM PDT | README routing surface; no 1:1 twin is assigned. |
 
 ### Update History
 
 | Timestamp | Surface | Event | Location | Previous Location | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| 2026-09-27 12:59 PM PDT | GitHub | `UPDATED` | `TavallStudios/Tavall-Architecture-Tests/README.md` | `TavallStudios/Tavall-Architecture-Tests/README.md` | [PR #16](https://github.com/TavallStudios/Tavall-Architecture-Tests/pull/16) | Added a public front door and current module map while removing internal Maven destination details. |
+| 2026-09-27 12:59 PM PDT | GitHub | `UPDATED` | `TavallStudios/tavall-test-suite-tools/README.md` | `TavallStudios/tavall-test-suite-tools/README.md` | [PR #16](https://github.com/TavallStudios/tavall-test-suite-tools/pull/16) | Added a public front door and current module map while removing internal Maven destination details. |
 
 </details>
