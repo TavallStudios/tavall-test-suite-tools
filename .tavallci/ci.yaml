@@ -12,6 +12,17 @@ build:
 resources:
   mode: SYSTEM
 
+modules:
+  - gradle-plugin
+  - modules/core
+  - modules/patterns
+  - modules/di
+  - modules/registry
+  - modules/cache
+  - modules/database
+  - modules/runtime
+  - modules/web
+
 dependencies:
   - kind: source
     identity: TavallStudios/tavall-cache
@@ -33,26 +44,6 @@ dependencies:
     identity: TavallStudios/tavall-registry
     role: SHARED_DEP
     selector: required-source
-
-artifacts:
-  - name: tavall-architecture-gradle-plugin
-    path: gradle-plugin/build/libs/gradle-plugin-1.1.0.jar
-  - name: tavall-architecture-core
-    path: modules/core/build/libs/tavall-architecture-core-1.1.0.jar
-  - name: tavall-architecture-patterns
-    path: modules/patterns/build/libs/tavall-architecture-patterns-1.1.0.jar
-  - name: tavall-architecture-di
-    path: modules/di/build/libs/tavall-architecture-di-1.1.0.jar
-  - name: tavall-architecture-registry
-    path: modules/registry/build/libs/tavall-architecture-registry-1.1.0.jar
-  - name: tavall-architecture-cache
-    path: modules/cache/build/libs/tavall-architecture-cache-1.1.0.jar
-  - name: tavall-architecture-database
-    path: modules/database/build/libs/tavall-architecture-database-1.1.0.jar
-  - name: tavall-architecture-runtime
-    path: modules/runtime/build/libs/tavall-architecture-runtime-1.1.0.jar
-  - name: tavall-architecture-web
-    path: modules/web/build/libs/tavall-architecture-web-1.1.0.jar
 
 requiredChecks:
   - quality
