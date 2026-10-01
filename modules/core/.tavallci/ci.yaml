@@ -14,6 +14,7 @@ resources:
 artifacts:
   - name: tavall-architecture-core
     path: build/libs/tavall-architecture-core-1.1.0.jar
+    channel: RELEASE
 
 requiredChecks:
   - quality

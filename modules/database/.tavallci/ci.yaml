@@ -14,6 +14,7 @@ resources:
 artifacts:
   - name: tavall-architecture-database
     path: build/libs/tavall-architecture-database-1.1.0.jar
+    channel: RELEASE
 
 requiredChecks:
   - quality

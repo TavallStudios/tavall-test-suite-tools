@@ -14,6 +14,7 @@ resources:
 artifacts:
   - name: tavall-architecture-cache
     path: build/libs/tavall-architecture-cache-1.1.0.jar
+    channel: RELEASE
 
 requiredChecks:
   - quality
