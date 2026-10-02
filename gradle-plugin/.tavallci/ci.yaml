@@ -12,8 +12,9 @@ resources:
   mode: SYSTEM
 
 artifacts:
-  - name: tavall-architecture-gradle-plugin
+  - name: gradle-plugin
     path: build/libs/gradle-plugin-1.1.0.jar
+    channel: RELEASE
 
 requiredChecks:
   - quality
