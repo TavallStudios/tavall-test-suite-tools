@@ -9,9 +9,9 @@
     },
     "git": {
       "authority": "github.com/TavallStudios/tavall-test-suite-tools",
-      "observedAt": "2026-10-03T23:47:02Z",
+      "observedAt": "2026-10-03T23:48:56Z",
       "ref": "refs/heads/working/web-frontend-artifact-ownership-20261003",
-      "revision": "1093f4036fe0aa936300882516800f235dd9685c"
+      "revision": "89eec628e26799ee1055db1b31174dd0bdcc3ae2"
     },
     "ledger": {
       "authority": "tavall-agent-ledger",
