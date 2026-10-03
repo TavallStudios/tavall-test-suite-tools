@@ -8,9 +8,9 @@
     },
     "git": {
       "authority": "github.com/TavallStudios/tavall-test-suite-tools",
-      "observedAt": "2026-10-03T23:48:56Z",
+      "observedAt": "2026-10-03T23:52:22Z",
       "ref": "refs/heads/working/web-frontend-artifact-ownership-20261003",
-      "revision": "89eec628e26799ee1055db1b31174dd0bdcc3ae2"
+      "revision": "f0360c04b5e67aa0a967b06c5faab89e7a2f71f6"
     }
   },
   "entrypoints": {
