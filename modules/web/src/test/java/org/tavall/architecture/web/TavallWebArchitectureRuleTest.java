@@ -19,6 +19,8 @@ import javax.tools.JavaCompiler;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 final class TavallWebArchitectureRuleTest {
@@ -96,7 +98,6 @@ final class TavallWebArchitectureRuleTest {
         Path repository = createProject("tavall-web", "tavall-web-frontend");
         write(repository, "tavall-web-frontend/build.gradle.kts", """
                 plugins { `java-library` }
-                dependencies { api(project(\":tavall-web-api\")) }
                 """);
         write(repository, "tavall-web-frontend/src/main/java/org/tavall/web/frontend/abstracts/html/AbstractPageHTMLBuilder.java", """
                 package org.tavall.web.frontend.abstracts.html;
@@ -132,6 +133,59 @@ final class TavallWebArchitectureRuleTest {
 
         assertTrue(violations.stream().anyMatch(value -> value.ruleId().equals("web-builder-runtime-lookup")));
         assertTrue(violations.stream().anyMatch(value -> value.ruleId().equals("web-generated-frontend-symbols")));
+    }
+
+    @Test
+    void allowsFrontendArtifactToOwnLegacyApiPackageWithoutDependingOnRouteApi() throws IOException {
+        Path repository = createProject("tavall-web", "tavall-web-frontend");
+        write(repository, "tavall-web-frontend/build.gradle.kts", "plugins { `java-library` }\n");
+        write(repository, "tavall-web-frontend/src/main/java/org/tavall/web/api/page/Page.java", """
+                package org.tavall.web.api.page;
+                public interface Page { }
+                """);
+
+        List<ArchitectureViolation> violations = validate(
+                repository.resolve("tavall-web-frontend/src/main/java"));
+
+        assertFalse(violations.stream().anyMatch(value -> value.ruleId().equals("web-platform-api-dependency")));
+        assertFalse(violations.stream().anyMatch(value -> value.ruleId().equals("web-api-duplicate-contract")));
+        assertFalse(violations.stream().anyMatch(value -> value.ruleId().equals("web-frontend-contract-location")));
+    }
+
+    @Test
+    void keepsPageAndRenderingContractsOutOfRouteApiArtifact() throws IOException {
+        Path repository = createProject("tavall-web", "tavall-web-api");
+        write(repository, "tavall-web-api/build.gradle.kts", "plugins { `java-library` }\n");
+        write(repository, "tavall-web-api/src/main/java/org/tavall/web/api/page/Page.java", """
+                package org.tavall.web.api.page;
+                public interface Page { }
+                """);
+
+        List<ArchitectureViolation> violations = validate(repository.resolve("tavall-web-api/src/main/java"));
+
+        assertTrue(violations.stream().anyMatch(value -> value.ruleId().equals("web-frontend-contract-location")));
+    }
+
+    @Test
+    void requiresTheWebHostRouteApiOnceAcrossMultipleJavaSourceRoots() throws IOException {
+        Path repository = createProject("tavall-web", "tavall-web-app");
+        write(repository, "tavall-web-app/build.gradle.kts", "plugins { `java-library` }\n");
+        write(repository, "tavall-web-app/src/main/java/org/tavall/novus/web/Host.java", """
+                package org.tavall.novus.web;
+                public final class Host { }
+                """);
+        write(repository, "tavall-web-app/src/generated/java/org/tavall/novus/web/GeneratedHost.java", """
+                package org.tavall.novus.web;
+                public final class GeneratedHost { }
+                """);
+
+        List<ArchitectureViolation> violations = validate(
+                repository.resolve("tavall-web-app/src/main/java"),
+                repository.resolve("tavall-web-app/src/generated/java"));
+
+        assertEquals(1, violations.stream()
+                .filter(value -> value.ruleId().equals("web-platform-api-dependency"))
+                .count());
     }
 
     private Path createProject(String rootName, String moduleName) throws IOException {

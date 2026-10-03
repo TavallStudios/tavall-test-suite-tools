@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -25,6 +26,16 @@ public final class TavallWebArchitectureRule implements ArchitectureRule {
             "tavall-web-frontend-gradle",
             "tavall-web-app",
             "tavall-web-test-suite"
+    );
+    private static final List<String> FRONTEND_OWNED_LEGACY_API_PACKAGES = List.of(
+            "org.tavall.web.api.animation",
+            "org.tavall.web.api.asset",
+            "org.tavall.web.api.css",
+            "org.tavall.web.api.html",
+            "org.tavall.web.api.page",
+            "org.tavall.web.api.render",
+            "org.tavall.web.api.symbol",
+            "org.tavall.web.api.ts"
     );
     private static final List<String> FORBIDDEN_PRODUCT_IMPORTS = List.of(
             "org.tavall.novus.web.account.persistence",
@@ -53,6 +64,7 @@ public final class TavallWebArchitectureRule implements ArchitectureRule {
     @Override
     public List<ArchitectureViolation> validate(ArchitectureContext context) {
         List<ArchitectureViolation> violations = new ArrayList<>();
+        Set<Path> inspectedProjects = new HashSet<>();
         for (Path sourceRoot : context.sourceRoots()) {
             if (!Files.isDirectory(sourceRoot)) {
                 continue;
@@ -61,7 +73,9 @@ public final class TavallWebArchitectureRule implements ArchitectureRule {
             if (location == null) {
                 continue;
             }
-            inspectProject(location, sourceRoot, violations);
+            if (inspectedProjects.add(location.moduleDirectory())) {
+                inspectProject(location, sourceRoot, violations);
+            }
             scanSources(location, sourceRoot, violations);
         }
         return List.copyOf(violations);
@@ -81,11 +95,10 @@ public final class TavallWebArchitectureRule implements ArchitectureRule {
             }
         }
 
-        if (location.moduleName().equals("tavall-web-app")
-                || location.moduleName().equals("tavall-web-frontend")) {
+        if (location.moduleName().equals("tavall-web-app")) {
             if (!build.contains("tavall-web-api")) {
                 add(violations, "web-platform-api-dependency", location.moduleName(),
-                        "Reusable Web platform modules must depend on the canonical tavall-web-api");
+                        "The tavall-web-app host must compose the canonical route and surface API");
             }
         }
 
@@ -148,10 +161,19 @@ public final class TavallWebArchitectureRule implements ArchitectureRule {
             String subject = subject(location, path);
             String packageName = packageName(source);
 
+            boolean frontendOwnedLegacyPackage = location.moduleName().equals("tavall-web-frontend")
+                    && belongsToFrontendOwnedLegacyApiPackage(packageName);
+            if (location.moduleName().equals("tavall-web-api")
+                    && belongsToFrontendOwnedLegacyApiPackage(packageName)) {
+                add(violations, "web-frontend-contract-location", subject,
+                        "Page, rendering, HTML/CSS, animation, asset, symbol, and TypeScript contracts belong to tavall-web-frontend");
+            }
+
             if (!location.moduleName().equals("tavall-web-api")
-                    && packageName.startsWith("org.tavall.web.api")) {
+                    && isWebApiPackage(packageName)
+                    && !frontendOwnedLegacyPackage) {
                 add(violations, "web-api-duplicate-contract", subject,
-                        "Canonical API packages may be declared only by tavall-web-api");
+                        "Route/surface API packages and unknown API namespaces may be declared only by tavall-web-api");
             }
 
             if (location.moduleName().equals("tavall-web-api")
@@ -196,6 +218,15 @@ public final class TavallWebArchitectureRule implements ArchitectureRule {
 
     private static boolean isProductModule(String moduleName) {
         return moduleName.startsWith("tavall-web-") && !PLATFORM_MODULES.contains(moduleName);
+    }
+
+    private static boolean belongsToFrontendOwnedLegacyApiPackage(String packageName) {
+        return FRONTEND_OWNED_LEGACY_API_PACKAGES.stream()
+                .anyMatch(root -> packageName.equals(root) || packageName.startsWith(root + "."));
+    }
+
+    private static boolean isWebApiPackage(String packageName) {
+        return packageName.equals("org.tavall.web.api") || packageName.startsWith("org.tavall.web.api.");
     }
 
     private static boolean isBuilderSource(Path path, String source) {

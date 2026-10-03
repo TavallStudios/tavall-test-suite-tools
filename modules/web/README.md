@@ -10,6 +10,16 @@ Owns reusable Tavall Web architecture checks.
 ### Does Not Own
 - Web runtime behavior or consumer-specific endpoint tests.
 
+## Tavall Web Contract Map
+
+This module checks the Web ownership boundary documented by Tavall Web PR #58's API and frontend DESIGN pages:
+
+- `tavall-web-api` owns route, surface, and exposure contracts.
+- `tavall-web-frontend` owns page, HTML/CSS, animation, asset, TypeScript, and rendering contracts. Its retained `org.tavall.web.api.*` packages are Java compatibility names; they do not make the Web frontend artifact depend on the route API artifact.
+- `tavall-web-app` composes the route API with the frontend when it hosts product pages. Web product modules depend on the route API when they declare Web surfaces.
+
+The reusable rule checks those source/artifact owners. Product-specific route behavior stays with its product module, and this module must not require the frontend library to depend on the route API merely because a Java package retains the historical `.api` segment.
+
 ## Repository Structure
 
 tavall-test-suite-tools/\
@@ -30,6 +40,8 @@ tavall-test-suite-tools/\
 | [`modules/core`](../core/README.md) | Uses the shared rule contract and execution engine. |
 | [`gradle-plugin`](../../gradle-plugin/README.md) | Selected artifacts are run by the consumer-facing Gradle plugin. |
 | [`modules/runtime`](../runtime/README.md) | Provides reusable runtime-oriented test support. |
+| [Tavall Web API DESIGN](https://github.com/TavallStudios/tavall-web/blob/working/retire-deleted-discord-web-module-20261003/docs/design/modules/TAVALL_WEB_API_DESIGN.md) | Defines the route/surface/exposure artifact boundary enforced by this module. |
+| [Tavall Web frontend DESIGN](https://github.com/TavallStudios/tavall-web/blob/working/retire-deleted-discord-web-module-20261003/docs/design/modules/TAVALL_WEB_FRONTEND_DESIGN.md) | Defines page/rendering ownership and legacy Java package compatibility. |
 
 ## Documentation
 
@@ -49,7 +61,7 @@ Runtime owner: `None`. The module ships as a Gradle-compatible artifact or test-
 
 - **Module Type:** `LIBRARY`
 - **Runtime:** `None`
-- **Current PR Stack:** [platform integration root #15](https://github.com/TavallStudios/tavall-test-suite-tools/pull/15), [artifact version alignment #14](https://github.com/TavallStudios/tavall-test-suite-tools/pull/14), [test-authoring enforcement #8](https://github.com/TavallStudios/tavall-test-suite-tools/pull/8); documentation update: [PR #16](https://github.com/TavallStudios/tavall-test-suite-tools/pull/16).
+- **Current PR Stack:** Web frontend artifact ownership rule correction on `working/web-frontend-artifact-ownership-20261003`; existing suite and platform integration PR history remains linked in the repository Progression.
 - Repository-specific development guide: [CONTRIBUTING.md](../../CONTRIBUTING.md).
 
 
