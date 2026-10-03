@@ -35,7 +35,7 @@ The division of authority is explicit:
 - **2026-09-22 - aggregate inherited DI marker debt and include compile classpaths (`0f6ca4c`, `81ae78d`, `3e71575`, PR #10)**: Aggregated retired DI marker debt handling and included consumer compile classpaths for comprehensive dependency analysis.
 - **2026-09-23 - progression and lineage consolidation (`working/architecture-tests-progression-lineage-20260923`)**: Added canonical progression documentation, linked authority model to Tavall Docs, and bound repository verification contract.
 - **2026-10-03 - Web frontend artifact ownership correction**: Updated the reusable Web rule to follow the current Tavall Web module DESIGN: the frontend library owns Page/rendering contracts and their compatibility package names, while the Web app and product surface modules consume the route API. Project-level checks now execute once per module even when Gradle supplies more than one Java source root.
-- **2026-10-03 - producer source and exact-source integration**: The change is on `working/web-frontend-artifact-ownership-20261003`, based on `main@ed7e97a`. Exact-source Tavall CI and Web consumer validation have not run on this candidate yet.
+- **2026-10-03 - producer source and exact-source integration (PR #21)**: The exact producer candidate is `working/web-frontend-artifact-ownership-20261003@13006ede`. Tavall-Web #58's shared-Executor request `85b6c8d9-e54c-49d9-b50a-2422ae6dcb02` exposed the stale frontend/API rule; producer Tavall CI and consumer revalidation are pending.
 
 ## 4. Module Matrix
 

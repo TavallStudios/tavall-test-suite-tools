@@ -61,7 +61,7 @@ Runtime owner: `None`. The module ships as a Gradle-compatible artifact or test-
 
 - **Module Type:** `LIBRARY`
 - **Runtime:** `None`
-- **Current PR Stack:** Web frontend artifact ownership rule correction on `working/web-frontend-artifact-ownership-20261003`; existing suite and platform integration PR history remains linked in the repository Progression.
+- **Current PR Stack:** Draft [PR #21](https://github.com/TavallStudios/tavall-test-suite-tools/pull/21) on `working/web-frontend-artifact-ownership-20261003`; existing suite and platform integration PR history remains linked in the repository Progression.
 - Repository-specific development guide: [CONTRIBUTING.md](../../CONTRIBUTING.md).
 
 
@@ -72,7 +72,7 @@ Runtime owner: `None`. The module ships as a Gradle-compatible artifact or test-
 
 | Surface | Sync State | Location | Last Updated | Evidence |
 | --- | --- | --- | --- | --- |
-| GitHub | `PRIMARY` | `TavallStudios/tavall-test-suite-tools/modules/web/README.md` | 2026-09-27 12:59 PM PDT | [PR #16](https://github.com/TavallStudios/tavall-test-suite-tools/pull/16) |
+| GitHub | `PRIMARY` | `TavallStudios/tavall-test-suite-tools/modules/web/README.md` | 2026-10-03 4:49 PM PDT | [PR #21](https://github.com/TavallStudios/tavall-test-suite-tools/pull/21) |
 | Notion | `NOT_APPLICABLE` | — | 2026-09-27 12:59 PM PDT | README routing surface; no 1:1 twin is assigned. |
 
 ### Update History
@@ -80,5 +80,6 @@ Runtime owner: `None`. The module ships as a Gradle-compatible artifact or test-
 | Timestamp | Surface | Event | Location | Previous Location | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
 | 2026-09-27 12:59 PM PDT | GitHub | `CREATED` | `TavallStudios/tavall-test-suite-tools/modules/web/README.md` | — | [PR #16](https://github.com/TavallStudios/tavall-test-suite-tools/pull/16) | Added a contextual module README with source-backed ownership and links to the current consumer and validation records. |
+| 2026-10-03 4:49 PM PDT | GitHub | `UPDATED` | `TavallStudios/tavall-test-suite-tools/modules/web/README.md` | Same path | [PR #21](https://github.com/TavallStudios/tavall-test-suite-tools/pull/21) | Recorded the API/frontend artifact rule boundary and linked its current Tavall Web DESIGN owners. |
 
 </details>
