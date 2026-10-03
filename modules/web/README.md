@@ -72,7 +72,7 @@ Runtime owner: `None`. The module ships as a Gradle-compatible artifact or test-
 
 | Surface | Sync State | Location | Last Updated | Evidence |
 | --- | --- | --- | --- | --- |
-| GitHub | `PRIMARY` | `TavallStudios/tavall-test-suite-tools/modules/web/README.md` | 2026-10-03 4:49 PM PDT | [PR #21](https://github.com/TavallStudios/tavall-test-suite-tools/pull/21) |
+| GitHub | `PRIMARY` | `TavallStudios/tavall-test-suite-tools/modules/web/README.md` | 2026-10-03 4:57 PM PDT | [PR #21](https://github.com/TavallStudios/tavall-test-suite-tools/pull/21) |
 | Notion | `NOT_APPLICABLE` | — | 2026-09-27 12:59 PM PDT | README routing surface; no 1:1 twin is assigned. |
 
 ### Update History
@@ -81,5 +81,6 @@ Runtime owner: `None`. The module ships as a Gradle-compatible artifact or test-
 | --- | --- | --- | --- | --- | --- | --- |
 | 2026-09-27 12:59 PM PDT | GitHub | `CREATED` | `TavallStudios/tavall-test-suite-tools/modules/web/README.md` | — | [PR #16](https://github.com/TavallStudios/tavall-test-suite-tools/pull/16) | Added a contextual module README with source-backed ownership and links to the current consumer and validation records. |
 | 2026-10-03 4:49 PM PDT | GitHub | `UPDATED` | `TavallStudios/tavall-test-suite-tools/modules/web/README.md` | Same path | [PR #21](https://github.com/TavallStudios/tavall-test-suite-tools/pull/21) | Recorded the API/frontend artifact rule boundary and linked its current Tavall Web DESIGN owners. |
+| 2026-10-03 4:57 PM PDT | GitHub | `UPDATED` | `TavallStudios/tavall-test-suite-tools/modules/web/README.md` | Same path | Tavall CI request `6438a2b6-9481-4b17-af2c-dbc57d3adf94`; [PR #21](https://github.com/TavallStudios/tavall-test-suite-tools/pull/21) | Recorded exact-source producer validation and the remaining Web consumer/package gates. |
 
 </details>

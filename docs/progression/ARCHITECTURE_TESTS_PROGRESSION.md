@@ -4,7 +4,7 @@
 > **Source of Truth For:** Audited provenance, implementation, publication, and consumer adoption progression for the canonical Tavall Test Suite Tools
 > **Must Not Define:** Written architecture policy (owned by `tavall-docs`), product-specific behavior (owned by consumer repositories)
 > **Current Status:** Production Canonical / Reusable Gradle Plugin & Modules Published / Active Across Consumers
-> **Last Audited Producer Commit:** `ed7e97a6109f0b0d7c952065580c018815521407`
+> **Last Audited Producer Commit:** `f0c41f5ec7d0f3d6a5e0029a8d9a9683646061e5`
 > **Canonical Repository:** `TavallStudios/tavall-test-suite-tools`
 
 ## 1. About
@@ -35,7 +35,7 @@ The division of authority is explicit:
 - **2026-09-22 - aggregate inherited DI marker debt and include compile classpaths (`0f6ca4c`, `81ae78d`, `3e71575`, PR #10)**: Aggregated retired DI marker debt handling and included consumer compile classpaths for comprehensive dependency analysis.
 - **2026-09-23 - progression and lineage consolidation (`working/architecture-tests-progression-lineage-20260923`)**: Added canonical progression documentation, linked authority model to Tavall Docs, and bound repository verification contract.
 - **2026-10-03 - Web frontend artifact ownership correction**: Updated the reusable Web rule to follow the current Tavall Web module DESIGN: the frontend library owns Page/rendering contracts and their compatibility package names, while the Web app and product surface modules consume the route API. Project-level checks now execute once per module even when Gradle supplies more than one Java source root.
-- **2026-10-03 - producer source and exact-source integration (PR #21)**: The exact producer candidate is `working/web-frontend-artifact-ownership-20261003@13006ede`. Tavall-Web #58's shared-Executor request `85b6c8d9-e54c-49d9-b50a-2422ae6dcb02` exposed the stale frontend/API rule; producer Tavall CI and consumer revalidation are pending.
+- **2026-10-03 - producer source and exact-source integration (PR #21)**: Tavall-Web #58's shared-Executor request `85b6c8d9-e54c-49d9-b50a-2422ae6dcb02` exposed the stale frontend/API rule. The correction is on `working/web-frontend-artifact-ownership-20261003@f0c41f5ec7d0f3d6a5e0029a8d9a9683646061e5`; Tavall CI request `6438a2b6-9481-4b17-af2c-dbc57d3adf94` passed `QUALITY` and `REQUIRED_ALL` on the shared Executor. Web consumer exact-source revalidation and package-backed resolution remain pending.
 
 ## 4. Module Matrix
 
@@ -57,4 +57,10 @@ The division of authority is explicit:
 3. **Consumer Verification Gate**: Consumers execute `architectureTest` through their repository test-suite boundary; failure blocks local CI and PR promotion.
 4. **Temporary Debt Gate**: Deprecated or legacy patterns permitted temporarily via `config/architecture-debt.txt`; non-matching entries cause immediate build failure to prevent debt creep.
 
-The Web ownership rule change is being validated through Tavall CI on its exact producer head and then through the exact-source Web consumer composite. Source-check evidence and package-backed consumer resolution remain separate gates.
+## Current Validation State
+
+| Gate | State | Evidence | Next |
+| --- | --- | --- | --- |
+| Producer source, tests, and repository quality | PASS | Tavall CI request `6438a2b6-9481-4b17-af2c-dbc57d3adf94` on producer source `f0c41f5ec7d0f3d6a5e0029a8d9a9683646061e5`; `QUALITY` and `REQUIRED_ALL` passed on the shared Executor with Java 25 / Gradle 9.6.1 | Keep producer PR #21 on this tested code unless follow-up source changes require a rerun. |
+| Web exact-source consumer architecture/build | PENDING | Tavall-Web request `85b6c8d9-e54c-49d9-b50a-2422ae6dcb02` failed with the stale rule `web-platform-api-dependency|tavall-web-frontend` using producer `main@ed7e97a` | Run Web #58 with exact producer PR #21 source. |
+| Package-backed Web consumer | PENDING | Producer PR #21 has not published package coordinates | Validate separately after canonical publication is available. |
