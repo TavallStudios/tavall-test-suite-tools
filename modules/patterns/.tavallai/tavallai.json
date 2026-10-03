@@ -1,0 +1,39 @@
+{
+  "$schema": "https://tavall.org/schemas/tavallai/v1.json",
+  "authorities": {
+    "docs": {
+      "authority": "github.com/TavallStudios/tavall-docs",
+      "observedAt": "2026-10-03T09:07:30Z",
+      "ref": "refs/heads/main"
+    },
+    "git": {
+      "authority": "github.com/TavallStudios/tavall-test-suite-tools",
+      "observedAt": "2026-10-03T23:47:02Z",
+      "ref": "refs/heads/working/web-frontend-artifact-ownership-20261003",
+      "revision": "1093f4036fe0aa936300882516800f235dd9685c"
+    }
+  },
+  "entrypoints": {
+    "runs": {
+      "active": "runs/active.json",
+      "history": "runs/history.json"
+    },
+    "threads": "threads/index.json",
+    "work": {
+      "current": "work/current.json",
+      "history": "work/history.json"
+    }
+  },
+  "parent": {
+    "authority": "repo-root:.tavallai",
+    "observedAt": "2026-10-03T09:07:30Z",
+    "ref": "../../../.tavallai/tavallai.json"
+  },
+  "scope": {
+    "name": "patterns",
+    "path": "modules/patterns",
+    "repository": "TavallStudios/tavall-test-suite-tools",
+    "type": "MODULE_ROOT"
+  },
+  "version": 1
+}
