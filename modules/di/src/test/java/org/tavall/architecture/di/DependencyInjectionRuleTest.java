@@ -185,6 +185,10 @@ final class DependencyInjectionRuleTest {
                         ValidSampleServiceImpl service = new ValidSampleServiceImpl();
                         IDependencyMap map = null;
                     }
+
+                    public void runAgain() {
+                        ValidSampleServiceImpl service = new ValidSampleServiceImpl();
+                    }
                 }
                 """);
 
@@ -214,6 +218,10 @@ final class DependencyInjectionRuleTest {
 
         assertTrue(violations.stream().anyMatch(v -> v.ruleId().equals("direct-construction-di-managed")),
                 "Expected direct-construction-di-managed violation in OrdinaryConsumer");
+        assertEquals(1, violations.stream()
+                .filter(v -> v.ruleId().equals("direct-construction-di-managed")
+                        && v.subject().endsWith("OrdinaryConsumer.java->ValidSampleServiceImpl"))
+                .count());
         assertTrue(violations.stream().anyMatch(v -> v.ruleId().equals("direct-dependency-map-access")),
                 "Expected direct-dependency-map-access violation in OrdinaryConsumer");
         assertFalse(violations.stream().anyMatch(v -> v.subject().contains("AppBootstrap.java")),

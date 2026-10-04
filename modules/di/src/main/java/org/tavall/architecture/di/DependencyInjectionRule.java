@@ -21,7 +21,9 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -126,7 +128,15 @@ public final class DependencyInjectionRule implements ArchitectureRule {
             scanSources(sourceRoot, diManagedSimpleNames, violations);
         }
 
-        return List.copyOf(violations);
+        return uniqueByDebtKey(violations);
+    }
+
+    private static List<ArchitectureViolation> uniqueByDebtKey(List<ArchitectureViolation> violations) {
+        Map<String, ArchitectureViolation> unique = new LinkedHashMap<>();
+        for (ArchitectureViolation violation : violations) {
+            unique.putIfAbsent(violation.debtKey(), violation);
+        }
+        return List.copyOf(unique.values());
     }
 
     private static void auditBehavioralComponent(Class<?> type, List<ArchitectureViolation> violations) {
