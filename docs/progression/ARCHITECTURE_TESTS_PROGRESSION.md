@@ -4,7 +4,7 @@
 > **Source of Truth For:** Audited provenance, implementation, publication, and consumer adoption progression for the canonical Tavall Test Suite Tools
 > **Must Not Define:** Written architecture policy (owned by `tavall-docs`), product-specific behavior (owned by consumer repositories)
 > **Current Status:** Production Canonical / Reusable Gradle Plugin & Modules Published / Active Across Consumers
-> **Last Audited Producer Commit:** `3e71575`
+> **Last Audited Producer Commit:** `dd649cf`
 > **Canonical Repository:** `TavallStudios/tavall-test-suite-tools`
 
 ## 1. About
@@ -34,7 +34,7 @@ The division of authority is explicit:
 - **2026-09-19 - Tavall MC adopts canonical architecture suite**: Tavall MC consumer wired to canonical architecture-tests plugin via test suite boundary.
 - **2026-09-22 - aggregate inherited DI marker debt and include compile classpaths (`0f6ca4c`, `81ae78d`, `3e71575`, PR #10)**: Aggregated retired DI marker debt handling and included consumer compile classpaths for comprehensive dependency analysis.
 - **2026-09-23 - progression and lineage consolidation (`working/architecture-tests-progression-lineage-20260923`)**: Added canonical progression documentation, linked authority model to Tavall Docs, and bound repository verification contract.
-- **2026-10-04 - keep repeated DI dependency findings under one debt key (PR #22 candidate)**: A consumer that repeats the same concrete Tavall dependency in a field and a constructor now emits one relationship finding. The `concrete-implementation-dependency` rule remains active for both access forms; the change prevents duplicate keys from aborting canonical rule execution.
+- **2026-10-04 - keep repeated DI dependency findings under one debt key (producer commit `dd649cf`, PR #22)**: A consumer that repeats the same concrete Tavall dependency in a field and a constructor now emits one relationship finding. The `concrete-implementation-dependency` rule remains active for both access forms; a regression test verifies that the duplicate-key error does not replace the architecture check. Java 25 / Gradle 9.6.1 `./gradlew build` passed (68 tasks; 19 tests, zero failures or skips).
 
 ## 4. Module Matrix
 
