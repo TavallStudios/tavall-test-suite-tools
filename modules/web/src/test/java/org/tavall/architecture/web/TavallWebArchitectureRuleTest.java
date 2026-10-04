@@ -153,6 +153,41 @@ final class TavallWebArchitectureRuleTest {
     }
 
     @Test
+    void allowsSpringAdapterToDependOnFrontendWithoutDependingOnRouteApi() throws IOException {
+        Path repository = createProject("tavall-web", "tavall-web-frontend-spring");
+        write(repository, "tavall-web-frontend-spring/build.gradle.kts", """
+                plugins { `java-library` }
+                dependencies { api(project(\":tavall-web-frontend\")) }
+                """);
+        write(repository, "tavall-web-frontend-spring/src/main/java/org/tavall/web/frontend/spring/PageView.java", """
+                package org.tavall.web.frontend.spring;
+                public final class PageView { }
+                """);
+
+        List<ArchitectureViolation> violations = validate(
+                repository.resolve("tavall-web-frontend-spring/src/main/java"));
+
+        assertFalse(violations.stream().anyMatch(value -> value.ruleId().equals("web-platform-api-dependency")));
+        assertFalse(violations.stream().anyMatch(value -> value.ruleId().equals("web-product-api-dependency")));
+        assertFalse(violations.stream().anyMatch(value -> value.ruleId().equals("web-frontend-spring-dependency")));
+    }
+
+    @Test
+    void requiresSpringAdapterToDependOnFrontendFramework() throws IOException {
+        Path repository = createProject("tavall-web", "tavall-web-frontend-spring");
+        write(repository, "tavall-web-frontend-spring/build.gradle.kts", "plugins { `java-library` }\n");
+        write(repository, "tavall-web-frontend-spring/src/main/java/org/tavall/web/frontend/spring/PageView.java", """
+                package org.tavall.web.frontend.spring;
+                public final class PageView { }
+                """);
+
+        List<ArchitectureViolation> violations = validate(
+                repository.resolve("tavall-web-frontend-spring/src/main/java"));
+
+        assertTrue(violations.stream().anyMatch(value -> value.ruleId().equals("web-frontend-spring-dependency")));
+    }
+
+    @Test
     void keepsPageAndRenderingContractsOutOfRouteApiArtifact() throws IOException {
         Path repository = createProject("tavall-web", "tavall-web-api");
         write(repository, "tavall-web-api/build.gradle.kts", "plugins { `java-library` }\n");

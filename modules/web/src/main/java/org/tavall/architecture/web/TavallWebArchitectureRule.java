@@ -22,6 +22,7 @@ public final class TavallWebArchitectureRule implements ArchitectureRule {
     private static final Set<String> PLATFORM_MODULES = Set.of(
             "tavall-web-api",
             "tavall-web-frontend",
+            "tavall-web-frontend-spring",
             "tavall-web-frontend-codegen",
             "tavall-web-frontend-gradle",
             "tavall-web-app",
@@ -100,6 +101,12 @@ public final class TavallWebArchitectureRule implements ArchitectureRule {
                 add(violations, "web-platform-api-dependency", location.moduleName(),
                         "The tavall-web-app host must compose the canonical route and surface API");
             }
+        }
+
+        if (location.moduleName().equals("tavall-web-frontend-spring")
+                && !build.contains("tavall-web-frontend")) {
+            add(violations, "web-frontend-spring-dependency", location.moduleName(),
+                    "The Spring frontend adapter must depend on the transport-neutral frontend framework");
         }
 
         if (isProductModule(location.moduleName())) {

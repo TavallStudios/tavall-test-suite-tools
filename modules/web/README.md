@@ -16,6 +16,7 @@ This module checks the Web ownership boundary documented by Tavall Web PR #58's 
 
 - `tavall-web-api` owns route, surface, and exposure contracts.
 - `tavall-web-frontend` owns page, HTML/CSS, animation, asset, TypeScript, and rendering contracts. Its retained `org.tavall.web.api.*` packages are Java compatibility names; they do not make the Web frontend artifact depend on the route API artifact.
+- `tavall-web-frontend-spring` is a Web platform adapter over the frontend framework. It depends on the frontend artifact and remains independent of the route API.
 - `tavall-web-app` composes the route API with the frontend when it hosts product pages. Web product modules depend on the route API when they declare Web surfaces.
 
 The reusable rule checks those source/artifact owners. Product-specific route behavior stays with its product module, and this module must not require the frontend library to depend on the route API merely because a Java package retains the historical `.api` segment.
