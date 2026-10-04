@@ -10,7 +10,7 @@
     "git": {
       "authority": "github.com/TavallStudios/tavall-test-suite-tools",
       "branch": "working/web-frontend-artifact-ownership-20261003",
-      "headCommit": "027d2cb4a8219d3e1c82922f5c2986a8e33ebc7b",
+      "headCommit": "d99dfcc9add24e2597c5088cc2e1fef887b9264f",
       "pullRequest": 21
     },
     "ledger": {
