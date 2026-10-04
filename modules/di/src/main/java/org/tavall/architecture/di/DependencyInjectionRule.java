@@ -205,27 +205,32 @@ public final class DependencyInjectionRule implements ArchitectureRule {
             return;
         }
 
+        Set<Class<?>> reportedConcreteDependencies = new HashSet<>();
         for (Field field : consumer.getDeclaredFields()) {
             if (field.isSynthetic() || Modifier.isStatic(field.getModifiers())) {
                 continue;
             }
             Class<?> fieldType = field.getType();
-            if (isProhibitedConcreteDependency(fieldType)) {
+            if (isProhibitedConcreteDependency(fieldType)
+                    && reportedConcreteDependencies.add(fieldType)) {
                 violations.add(new ArchitectureViolation(
                         "concrete-implementation-dependency",
                         consumer.getName() + "->" + fieldType.getName(),
-                        "Consumer depends directly on concrete Tavall implementation " + fieldType.getName() + " instead of an interface contract"
+                        "Consumer references concrete Tavall implementation " + fieldType.getName()
+                                + " through a field or constructor parameter instead of an interface contract"
                 ));
             }
         }
 
         for (Constructor<?> constructor : consumer.getDeclaredConstructors()) {
             for (Class<?> paramType : constructor.getParameterTypes()) {
-                if (isProhibitedConcreteDependency(paramType)) {
+                if (isProhibitedConcreteDependency(paramType)
+                        && reportedConcreteDependencies.add(paramType)) {
                     violations.add(new ArchitectureViolation(
                             "concrete-implementation-dependency",
                             consumer.getName() + "->" + paramType.getName(),
-                            "Consumer constructor parameter depends directly on concrete Tavall implementation " + paramType.getName() + " instead of an interface contract"
+                            "Consumer references concrete Tavall implementation " + paramType.getName()
+                                    + " through a field or constructor parameter instead of an interface contract"
                     ));
                 }
             }
@@ -465,4 +470,3 @@ public final class DependencyInjectionRule implements ArchitectureRule {
         return source.replaceAll("/\\*.*?\\*/", "").replaceAll("//.*", "");
     }
 }
-

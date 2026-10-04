@@ -90,6 +90,18 @@ final class DependencyInjectionRuleTest {
     }
 
     @Test
+    void emitsOneDebtFindingWhenFieldAndConstructorShareTheSameConcreteDependency() {
+        List<ArchitectureViolation> violations = new DependencyInjectionRule()
+                .validate(ArchitectureContext.fromSystemProperties())
+                .stream()
+                .filter(v -> v.ruleId().equals("concrete-implementation-dependency")
+                        && v.subject().startsWith(BadConcreteConsumer.class.getName()))
+                .toList();
+
+        assertEquals(1, violations.size());
+    }
+
+    @Test
     void catchesDirectMapUsageInOrdinaryProductionClass() {
         List<ArchitectureViolation> violations = new DependencyInjectionRule()
                 .validate(ArchitectureContext.fromSystemProperties())
@@ -246,7 +258,11 @@ final class DependencyInjectionRuleTest {
     }
 
     public static final class BadConcreteConsumer {
-        private final ValidSampleServiceImpl concreteService = null;
+        private final ValidSampleServiceImpl concreteService;
+
+        public BadConcreteConsumer(ValidSampleServiceImpl concreteService) {
+            this.concreteService = concreteService;
+        }
     }
 
     public static final class BadMapConsumer {
@@ -277,4 +293,3 @@ final class DependencyInjectionRuleTest {
         private final ValidSampleServiceImpl implementation = null;
     }
 }
-

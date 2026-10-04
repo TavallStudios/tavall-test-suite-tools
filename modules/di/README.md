@@ -6,6 +6,7 @@ Owns reusable Tavall dependency-injection architecture checks.
 
 ### Owns
 - DI-specific architecture rule implementation.
+- One concrete-dependency debt finding per consumer and implementation type, even when that dependency appears in both a field and constructor; the underlying interface-first violation remains enforced.
 
 ### Does Not Own
 - Tavall DI runtime behavior or consumer object composition.
