@@ -7,6 +7,7 @@ Owns reusable Tavall dependency-injection architecture checks.
 ### Owns
 - DI-specific architecture rule implementation.
 - One concrete-dependency debt finding per consumer and implementation type, even when that dependency appears in both a field and constructor; the underlying interface-first violation remains enforced.
+- Generated `@DelegatesTo` `*DependencyAccess` adapters may hold the owning dependency map; their marker and source-generation header distinguish framework output from authored consumers, which remain checked for direct map access.
 
 ### Does Not Own
 - Tavall DI runtime behavior or consumer object composition.
