@@ -136,6 +136,33 @@ final class TavallWebArchitectureRuleTest {
     }
 
     @Test
+    void reportsModuleDependencyDebtOnceAcrossMultipleSourceRoots() throws IOException {
+        Path repository = createProject("tavall-web", "tavall-web-app");
+        write(repository, "tavall-web-app/build.gradle.kts", """
+                plugins { `java-library` }
+                dependencies { }
+                """);
+        write(repository, "tavall-web-app/src/main/java/org/tavall/novus/web/First.java", """
+                package org.tavall.web.frontend;
+                public final class First { }
+                """);
+        write(repository, "tavall-web-app/src/main/java/org/tavall/novus/web/nested/Second.java", """
+                package org.tavall.web.frontend.nested;
+                public final class Second { }
+                """);
+
+        List<ArchitectureViolation> violations = validate(
+                repository.resolve("tavall-web-app/src/main/java"),
+                repository.resolve("tavall-web-app/src/main/java/org/tavall/novus/web/nested"));
+        List<ArchitectureViolation> platformApiDebt = violations.stream()
+                .filter(violation -> violation.ruleId().equals("web-platform-api-dependency"))
+                .toList();
+
+        assertEquals(1, platformApiDebt.size());
+        assertEquals("web-platform-api-dependency|tavall-web-app", platformApiDebt.getFirst().debtKey());
+    }
+
+    @Test
     void allowsFrontendArtifactToOwnLegacyApiPackageWithoutDependingOnRouteApi() throws IOException {
         Path repository = createProject("tavall-web", "tavall-web-frontend");
         write(repository, "tavall-web-frontend/build.gradle.kts", "plugins { `java-library` }\n");

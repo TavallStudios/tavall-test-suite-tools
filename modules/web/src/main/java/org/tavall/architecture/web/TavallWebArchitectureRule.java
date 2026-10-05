@@ -9,7 +9,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -79,7 +81,11 @@ public final class TavallWebArchitectureRule implements ArchitectureRule {
             }
             scanSources(location, sourceRoot, violations);
         }
-        return List.copyOf(violations);
+        Map<String, ArchitectureViolation> unique = new LinkedHashMap<>();
+        for (ArchitectureViolation violation : violations) {
+            unique.putIfAbsent(violation.debtKey(), violation);
+        }
+        return List.copyOf(unique.values());
     }
 
     private static void inspectProject(
