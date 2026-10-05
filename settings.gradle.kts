@@ -9,5 +9,6 @@ include(
     ":modules:database",
     ":modules:runtime",
     ":modules:web",
+    ":modules:cli",
     ":gradle-plugin",
 )
