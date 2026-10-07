@@ -22,7 +22,8 @@ tavall-test-suite-tools/\
 │   ├── [`cache`](../modules/cache/README.md)\
 │   ├── [`database`](../modules/database/README.md)\
 │   ├── [`runtime`](../modules/runtime/README.md)\
-│   └── [`web`](../modules/web/README.md)\
+│   ├── [`web`](../modules/web/README.md)\
+│   └── [`cli`](../modules/cli/README.md)\
 └── **[`gradle-plugin`](README.md) ← This Module**\
 ## Relationships
 
