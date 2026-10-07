@@ -22,6 +22,7 @@ modules:
   - modules/database
   - modules/runtime
   - modules/web
+  - modules/cli
 
 dependencies:
   - kind: source
