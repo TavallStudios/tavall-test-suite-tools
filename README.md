@@ -11,7 +11,7 @@ This repository provides Tavall Studios' canonical executable architecture-test 
 ## Features
 
 - Canonical rule API and source/class analysis engine.
-- Optional rule modules for naming/source structure, DI, registries, cache, databases, runtime support, and web.
+- Optional rule modules for naming/source structure, DI, registries, cache, databases, runtime support, web, and Tavall CLI.
 - Gradle plugin `org.tavall.architecture-tests` for consumer task configuration.
 - Migration-debt support that tolerates known findings temporarily while failing on new or obsolete entries.
 
@@ -73,7 +73,8 @@ tavall-test-suite-tools/\
 │   ├── [cache](modules/cache/README.md)\
 │   ├── [database](modules/database/README.md)\
 │   ├── [runtime](modules/runtime/README.md)\
-│   └── [web](modules/web/README.md)\
+│   ├── [web](modules/web/README.md)\
+│   └── [cli](modules/cli/README.md)\
 └── [gradle-plugin](gradle-plugin/README.md)
 ## Documentation
 
@@ -140,5 +141,6 @@ Tavall CI composes this repository at an exact source SHA. The Gradle plugin ver
 | Timestamp | Surface | Event | Location | Previous Location | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
 | 2026-09-27 12:59 PM PDT | GitHub | `UPDATED` | `TavallStudios/tavall-test-suite-tools/README.md` | `TavallStudios/tavall-test-suite-tools/README.md` | [PR #16](https://github.com/TavallStudios/tavall-test-suite-tools/pull/16) | Added a public front door and current module map while removing internal Maven destination details. |
+| 2026-10-07 UTC | GitHub | `UPDATED` | `TavallStudios/tavall-test-suite-tools/README.md` | Same path | Tavall-MC separation work; current main PR #23 | Added the merged CLI architecture rule module to the repository feature and module maps. |
 
 </details>

@@ -23,7 +23,8 @@ tavall-test-suite-tools/\
 │   ├── [`cache`](../cache/README.md)\
 │   ├── [`database`](../database/README.md)\
 │   ├── [`runtime`](../runtime/README.md)\
-│   └── [`web`](../web/README.md)\
+│   ├── [`web`](../web/README.md)\
+│   └── [`cli`](../cli/README.md)\
 └── [`gradle-plugin`](../../gradle-plugin/README.md)\
 ## Relationships
 
@@ -51,7 +52,7 @@ Runtime owner: `None`. The module ships as a Gradle-compatible artifact or test-
 
 - **Module Type:** `LIBRARY`
 - **Runtime:** `None`
-- **Current PR Stack:** [platform integration root #15](https://github.com/TavallStudios/tavall-test-suite-tools/pull/15), [artifact version alignment #14](https://github.com/TavallStudios/tavall-test-suite-tools/pull/14), [test-authoring enforcement #8](https://github.com/TavallStudios/tavall-test-suite-tools/pull/8), and current DI architecture rule work [PR #22](https://github.com/TavallStudios/tavall-test-suite-tools/pull/22); prior documentation update [PR #16](https://github.com/TavallStudios/tavall-test-suite-tools/pull/16).
+- **Current PR Stack:** [platform integration root #24](https://github.com/TavallStudios/tavall-test-suite-tools/pull/24) → [Web artifact ownership #21](https://github.com/TavallStudios/tavall-test-suite-tools/pull/21) → [DI architecture follow-up #22](https://github.com/TavallStudios/tavall-test-suite-tools/pull/22).
 - Repository-specific development guide: [CONTRIBUTING.md](../../CONTRIBUTING.md).
 
 

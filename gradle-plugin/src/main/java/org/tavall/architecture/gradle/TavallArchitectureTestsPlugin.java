@@ -25,7 +25,7 @@ public final class TavallArchitectureTestsPlugin implements Plugin<Project> {
     private static final String PACKAGES_URL =
             "https://maven.pkg.github.com/TavallStudios/tavall-test-suite-tools";
     private static final Set<String> SUPPORTED_MODULES = Set.of(
-            "core", "patterns", "di", "registry", "cache", "database", "runtime", "web"
+            "core", "patterns", "di", "registry", "cache", "database", "runtime", "web", "cli"
     );
 
     @Override

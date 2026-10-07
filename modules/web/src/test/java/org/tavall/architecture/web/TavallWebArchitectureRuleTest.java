@@ -98,7 +98,6 @@ final class TavallWebArchitectureRuleTest {
         Path repository = createProject("tavall-web", "tavall-web-frontend");
         write(repository, "tavall-web-frontend/build.gradle.kts", """
                 plugins { `java-library` }
-                dependencies { api(project(\":tavall-web-api\")) }
                 """);
         write(repository, "tavall-web-frontend/src/main/java/org/tavall/web/frontend/abstracts/html/AbstractPageHTMLBuilder.java", """
                 package org.tavall.web.frontend.abstracts.html;
@@ -137,30 +136,101 @@ final class TavallWebArchitectureRuleTest {
     }
 
     @Test
-    void frontendPresentationModuleDoesNotRequireRouteApiDependency() throws IOException {
-        Path repository = createProject("tavall-web", "tavall-web-frontend");
-        write(repository, "tavall-web-frontend/build.gradle.kts", """
+    void reportsModuleDependencyDebtOnceAcrossMultipleSourceRoots() throws IOException {
+        Path repository = createProject("tavall-web", "tavall-web-app");
+        write(repository, "tavall-web-app/build.gradle.kts", """
                 plugins { `java-library` }
+                dependencies { }
                 """);
-        write(repository, "tavall-web-frontend/src/main/java/org/tavall/web/frontend/PageView.java", """
+        write(repository, "tavall-web-app/src/main/java/org/tavall/novus/web/First.java", """
                 package org.tavall.web.frontend;
-                public final class PageView { }
+                public final class First { }
+                """);
+        write(repository, "tavall-web-app/src/main/java/org/tavall/novus/web/nested/Second.java", """
+                package org.tavall.web.frontend.nested;
+                public final class Second { }
                 """);
 
         List<ArchitectureViolation> violations = validate(
-                repository.resolve("tavall-web-frontend/src/main/java")
-        );
+                repository.resolve("tavall-web-app/src/main/java"),
+                repository.resolve("tavall-web-app/src/main/java/org/tavall/novus/web/nested"));
+        List<ArchitectureViolation> platformApiDebt = violations.stream()
+                .filter(violation -> violation.ruleId().equals("web-platform-api-dependency"))
+                .toList();
 
-        assertFalse(violations.stream()
-                .anyMatch(value -> value.ruleId().equals("web-platform-api-dependency")));
+        assertEquals(1, platformApiDebt.size());
+        assertEquals("web-platform-api-dependency|tavall-web-app", platformApiDebt.getFirst().debtKey());
     }
 
     @Test
-    void springRenderingAdapterIsNotAWebProductModule() throws IOException {
+    void allowsFrontendArtifactToOwnLegacyApiPackageWithoutDependingOnRouteApi() throws IOException {
+        Path repository = createProject("tavall-web", "tavall-web-frontend");
+        write(repository, "tavall-web-frontend/build.gradle.kts", "plugins { `java-library` }\n");
+        List<String> frontendPackages = List.of(
+                "org.tavall.web.api.animation",
+                "org.tavall.web.api.asset",
+                "org.tavall.web.api.css",
+                "org.tavall.web.api.html",
+                "org.tavall.web.api.page",
+                "org.tavall.web.api.render",
+                "org.tavall.web.api.symbol",
+                "org.tavall.web.api.ts"
+        );
+        for (int index = 0; index < frontendPackages.size(); index++) {
+            String packageName = frontendPackages.get(index);
+            write(repository, "tavall-web-frontend/src/main/java/"
+                    + packageName.replace('.', '/') + "/Contract" + index + ".java", """
+                    package %s;
+                    public interface Contract%d { }
+                    """.formatted(packageName, index));
+        }
+
+        List<ArchitectureViolation> violations = validate(
+                repository.resolve("tavall-web-frontend/src/main/java"));
+
+        assertFalse(violations.stream().anyMatch(value -> value.ruleId().equals("web-platform-api-dependency")));
+        assertFalse(violations.stream().anyMatch(value -> value.ruleId().equals("web-api-duplicate-contract")));
+        assertFalse(violations.stream().anyMatch(value -> value.ruleId().equals("web-frontend-contract-location")));
+    }
+
+    @Test
+    void frontendCannotDeclareTheSurfaceApiRootPackage() throws IOException {
+        Path repository = createProject("tavall-web", "tavall-web-frontend");
+        write(repository, "tavall-web-frontend/src/main/java/org/tavall/web/api/Surface.java", """
+                package org.tavall.web.api;
+                public interface Surface { }
+                """);
+
+        List<ArchitectureViolation> violations = validate(
+                repository.resolve("tavall-web-frontend/src/main/java"));
+
+        assertTrue(violations.stream().anyMatch(value -> value.ruleId().equals("web-api-duplicate-contract")));
+    }
+
+    @Test
+    void productModulesCannotDeclareFrontendOwnedLegacyApiContracts() throws IOException {
+        Path repository = createProject("tavall-web", "tavall-web-mc");
+        write(repository, "tavall-web-mc/build.gradle.kts", """
+                plugins { `java-library` }
+                dependencies { api("org.tavall:tavall-web-api:0.1.0") }
+                """);
+        write(repository, "tavall-web-mc/src/main/java/org/tavall/web/api/page/ProductPage.java", """
+                package org.tavall.web.api.page;
+                public interface ProductPage { }
+                """);
+
+        List<ArchitectureViolation> violations = validate(
+                repository.resolve("tavall-web-mc/src/main/java"));
+
+        assertTrue(violations.stream().anyMatch(value -> value.ruleId().equals("web-api-duplicate-contract")));
+    }
+
+    @Test
+    void allowsSpringAdapterToDependOnFrontendWithoutDependingOnRouteApi() throws IOException {
         Path repository = createProject("tavall-web", "tavall-web-frontend-spring");
         write(repository, "tavall-web-frontend-spring/build.gradle.kts", """
                 plugins { `java-library` }
-                dependencies { api(project(":tavall-web-frontend")) }
+                dependencies { api(project(\":tavall-web-frontend\")) }
                 """);
         write(repository, "tavall-web-frontend-spring/src/main/java/org/tavall/web/frontend/spring/PageView.java", """
                 package org.tavall.web.frontend.spring;
@@ -168,35 +238,62 @@ final class TavallWebArchitectureRuleTest {
                 """);
 
         List<ArchitectureViolation> violations = validate(
-                repository.resolve("tavall-web-frontend-spring/src/main/java")
-        );
+                repository.resolve("tavall-web-frontend-spring/src/main/java"));
 
-        assertFalse(violations.stream()
-                .anyMatch(value -> value.ruleId().equals("web-product-api-dependency")));
+        assertFalse(violations.stream().anyMatch(value -> value.ruleId().equals("web-platform-api-dependency")));
+        assertFalse(violations.stream().anyMatch(value -> value.ruleId().equals("web-product-api-dependency")));
+        assertFalse(violations.stream().anyMatch(value -> value.ruleId().equals("web-frontend-spring-dependency")));
     }
 
     @Test
-    void projectDependencyFindingsAreEmittedOnceAcrossMultipleSourceRoots() throws IOException {
+    void requiresSpringAdapterToDependOnFrontendFramework() throws IOException {
+        Path repository = createProject("tavall-web", "tavall-web-frontend-spring");
+        write(repository, "tavall-web-frontend-spring/build.gradle.kts", "plugins { `java-library` }\n");
+        write(repository, "tavall-web-frontend-spring/src/main/java/org/tavall/web/frontend/spring/PageView.java", """
+                package org.tavall.web.frontend.spring;
+                public final class PageView { }
+                """);
+
+        List<ArchitectureViolation> violations = validate(
+                repository.resolve("tavall-web-frontend-spring/src/main/java"));
+
+        assertTrue(violations.stream().anyMatch(value -> value.ruleId().equals("web-frontend-spring-dependency")));
+    }
+
+    @Test
+    void keepsPageAndRenderingContractsOutOfRouteApiArtifact() throws IOException {
+        Path repository = createProject("tavall-web", "tavall-web-api");
+        write(repository, "tavall-web-api/build.gradle.kts", "plugins { `java-library` }\n");
+        write(repository, "tavall-web-api/src/main/java/org/tavall/web/api/page/Page.java", """
+                package org.tavall.web.api.page;
+                public interface Page { }
+                """);
+
+        List<ArchitectureViolation> violations = validate(repository.resolve("tavall-web-api/src/main/java"));
+
+        assertTrue(violations.stream().anyMatch(value -> value.ruleId().equals("web-frontend-contract-location")));
+    }
+
+    @Test
+    void requiresTheWebHostRouteApiOnceAcrossMultipleJavaSourceRoots() throws IOException {
         Path repository = createProject("tavall-web", "tavall-web-app");
-        write(repository, "tavall-web-app/build.gradle.kts", """
-                plugins { java }
-                """);
-        Path productionRoot = repository.resolve("tavall-web-app/src/main/java");
-        Path testRoot = repository.resolve("tavall-web-app/src/test/java");
-        write(repository, "tavall-web-app/src/main/java/org/tavall/novus/web/Application.java", """
+        write(repository, "tavall-web-app/build.gradle.kts", "plugins { `java-library` }\n");
+        write(repository, "tavall-web-app/src/main/java/org/tavall/novus/web/Host.java", """
                 package org.tavall.novus.web;
-                public final class Application { }
+                public final class Host { }
                 """);
-        write(repository, "tavall-web-app/src/test/java/org/tavall/novus/web/ApplicationTest.java", """
+        write(repository, "tavall-web-app/src/generated/java/org/tavall/novus/web/GeneratedHost.java", """
                 package org.tavall.novus.web;
-                public final class ApplicationTest { }
+                public final class GeneratedHost { }
                 """);
 
-        long findings = validate(productionRoot, testRoot).stream()
+        List<ArchitectureViolation> violations = validate(
+                repository.resolve("tavall-web-app/src/main/java"),
+                repository.resolve("tavall-web-app/src/generated/java"));
+
+        assertEquals(1, violations.stream()
                 .filter(value -> value.ruleId().equals("web-platform-api-dependency"))
-                .count();
-
-        assertEquals(1L, findings);
+                .count());
     }
 
     private Path createProject(String rootName, String moduleName) throws IOException {
