@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -21,6 +22,7 @@ public final class TavallWebArchitectureRule implements ArchitectureRule {
     private static final Set<String> PLATFORM_MODULES = Set.of(
             "tavall-web-api",
             "tavall-web-frontend",
+            "tavall-web-frontend-spring",
             "tavall-web-frontend-codegen",
             "tavall-web-frontend-gradle",
             "tavall-web-app",
@@ -53,6 +55,7 @@ public final class TavallWebArchitectureRule implements ArchitectureRule {
     @Override
     public List<ArchitectureViolation> validate(ArchitectureContext context) {
         List<ArchitectureViolation> violations = new ArrayList<>();
+        Set<Path> inspectedProjects = new HashSet<>();
         for (Path sourceRoot : context.sourceRoots()) {
             if (!Files.isDirectory(sourceRoot)) {
                 continue;
@@ -61,7 +64,10 @@ public final class TavallWebArchitectureRule implements ArchitectureRule {
             if (location == null) {
                 continue;
             }
-            inspectProject(location, sourceRoot, violations);
+            Path projectDirectory = location.moduleDirectory().toAbsolutePath().normalize();
+            if (inspectedProjects.add(projectDirectory)) {
+                inspectProject(location, violations);
+            }
             scanSources(location, sourceRoot, violations);
         }
         return List.copyOf(violations);
@@ -69,7 +75,6 @@ public final class TavallWebArchitectureRule implements ArchitectureRule {
 
     private static void inspectProject(
             ProjectLocation location,
-            Path sourceRoot,
             List<ArchitectureViolation> violations
     ) {
         String build = readBuild(location.moduleDirectory());
@@ -81,11 +86,10 @@ public final class TavallWebArchitectureRule implements ArchitectureRule {
             }
         }
 
-        if (location.moduleName().equals("tavall-web-app")
-                || location.moduleName().equals("tavall-web-frontend")) {
+        if (location.moduleName().equals("tavall-web-app")) {
             if (!build.contains("tavall-web-api")) {
                 add(violations, "web-platform-api-dependency", location.moduleName(),
-                        "Reusable Web platform modules must depend on the canonical tavall-web-api");
+                        "The executable Web application must depend on the canonical tavall-web-api");
             }
         }
 
@@ -101,24 +105,14 @@ public final class TavallWebArchitectureRule implements ArchitectureRule {
         }
 
         if (location.repositoryName().equals("tavall-mc")) {
-            inspectMinecraftOwnership(location, sourceRoot, violations);
+            inspectMinecraftResources(location, violations);
         }
     }
 
-    private static void inspectMinecraftOwnership(
+    private static void inspectMinecraftResources(
             ProjectLocation location,
-            Path sourceRoot,
             List<ArchitectureViolation> violations
     ) {
-        for (Path path : javaSources(sourceRoot)) {
-            String source = read(path);
-            String subject = subject(location, path);
-            if (importsAny(source, List.of("org.springframework", "org.thymeleaf", "jakarta.servlet"))
-                    || source.contains("org.tavall.novus.web")) {
-                add(violations, "minecraft-web-ownership", subject,
-                        "tavall-mc cannot regain browser, Spring, Thymeleaf, servlet, or Tavall Web implementation ownership");
-            }
-        }
         for (Path module = location.moduleDirectory(); module != null; module = module.getParent()) {
             if (hasBrowserResources(module)) {
                 add(violations, "minecraft-web-resources", subject(location, module),
@@ -147,6 +141,13 @@ public final class TavallWebArchitectureRule implements ArchitectureRule {
             String source = read(path);
             String subject = subject(location, path);
             String packageName = packageName(source);
+
+            if (location.repositoryName().equals("tavall-mc")
+                    && (importsAny(source, List.of("org.springframework", "org.thymeleaf", "jakarta.servlet"))
+                    || source.contains("org.tavall.novus.web"))) {
+                add(violations, "minecraft-web-ownership", subject,
+                        "tavall-mc cannot regain browser, Spring, Thymeleaf, servlet, or Tavall Web implementation ownership");
+            }
 
             if (!location.moduleName().equals("tavall-web-api")
                     && packageName.startsWith("org.tavall.web.api")) {

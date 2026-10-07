@@ -6,6 +6,7 @@ Owns reusable Tavall Web architecture checks.
 
 ### Owns
 - Tavall Web-specific architecture rule implementation.
+- Module dependency direction, product-versus-platform classification, and source ownership checks.
 
 ### Does Not Own
 - Web runtime behavior or consumer-specific endpoint tests.
@@ -30,6 +31,8 @@ tavall-test-suite-tools/\
 | [`modules/core`](../core/README.md) | Uses the shared rule contract and execution engine. |
 | [`gradle-plugin`](../../gradle-plugin/README.md) | Selected artifacts are run by the consumer-facing Gradle plugin. |
 | [`modules/runtime`](../runtime/README.md) | Provides reusable runtime-oriented test support. |
+
+Project-level checks run once per module even when consumers provide several source roots. Java source checks still inspect every supplied root. The executable Web application must depend on `tavall-web-api`; the reusable frontend model and Spring renderer remain platform modules and do not need that route API dependency.
 
 ## Documentation
 
