@@ -166,10 +166,24 @@ final class TavallWebArchitectureRuleTest {
     void allowsFrontendArtifactToOwnLegacyApiPackageWithoutDependingOnRouteApi() throws IOException {
         Path repository = createProject("tavall-web", "tavall-web-frontend");
         write(repository, "tavall-web-frontend/build.gradle.kts", "plugins { `java-library` }\n");
-        write(repository, "tavall-web-frontend/src/main/java/org/tavall/web/api/page/Page.java", """
-                package org.tavall.web.api.page;
-                public interface Page { }
-                """);
+        List<String> frontendPackages = List.of(
+                "org.tavall.web.api.animation",
+                "org.tavall.web.api.asset",
+                "org.tavall.web.api.css",
+                "org.tavall.web.api.html",
+                "org.tavall.web.api.page",
+                "org.tavall.web.api.render",
+                "org.tavall.web.api.symbol",
+                "org.tavall.web.api.ts"
+        );
+        for (int index = 0; index < frontendPackages.size(); index++) {
+            String packageName = frontendPackages.get(index);
+            write(repository, "tavall-web-frontend/src/main/java/"
+                    + packageName.replace('.', '/') + "/Contract" + index + ".java", """
+                    package %s;
+                    public interface Contract%d { }
+                    """.formatted(packageName, index));
+        }
 
         List<ArchitectureViolation> violations = validate(
                 repository.resolve("tavall-web-frontend/src/main/java"));
@@ -177,6 +191,38 @@ final class TavallWebArchitectureRuleTest {
         assertFalse(violations.stream().anyMatch(value -> value.ruleId().equals("web-platform-api-dependency")));
         assertFalse(violations.stream().anyMatch(value -> value.ruleId().equals("web-api-duplicate-contract")));
         assertFalse(violations.stream().anyMatch(value -> value.ruleId().equals("web-frontend-contract-location")));
+    }
+
+    @Test
+    void frontendCannotDeclareTheSurfaceApiRootPackage() throws IOException {
+        Path repository = createProject("tavall-web", "tavall-web-frontend");
+        write(repository, "tavall-web-frontend/src/main/java/org/tavall/web/api/Surface.java", """
+                package org.tavall.web.api;
+                public interface Surface { }
+                """);
+
+        List<ArchitectureViolation> violations = validate(
+                repository.resolve("tavall-web-frontend/src/main/java"));
+
+        assertTrue(violations.stream().anyMatch(value -> value.ruleId().equals("web-api-duplicate-contract")));
+    }
+
+    @Test
+    void productModulesCannotDeclareFrontendOwnedLegacyApiContracts() throws IOException {
+        Path repository = createProject("tavall-web", "tavall-web-mc");
+        write(repository, "tavall-web-mc/build.gradle.kts", """
+                plugins { `java-library` }
+                dependencies { api("org.tavall:tavall-web-api:0.1.0") }
+                """);
+        write(repository, "tavall-web-mc/src/main/java/org/tavall/web/api/page/ProductPage.java", """
+                package org.tavall.web.api.page;
+                public interface ProductPage { }
+                """);
+
+        List<ArchitectureViolation> violations = validate(
+                repository.resolve("tavall-web-mc/src/main/java"));
+
+        assertTrue(violations.stream().anyMatch(value -> value.ruleId().equals("web-api-duplicate-contract")));
     }
 
     @Test

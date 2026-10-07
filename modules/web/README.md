@@ -16,6 +16,7 @@ This module checks the Web ownership boundary documented by Tavall Web PR #58's 
 
 - `tavall-web-api` owns route, surface, and exposure contracts.
 - `tavall-web-frontend` owns page, HTML/CSS, animation, asset, TypeScript, and rendering contracts. Its retained `org.tavall.web.api.*` packages are Java compatibility names; they do not make the Web frontend artifact depend on the route API artifact.
+- The compatibility package roots are explicitly limited to `animation`, `asset`, `css`, `html`, `page`, `render`, `symbol`, and `ts` under `org.tavall.web.api`. The namespace root and route/surface packages remain owned by `tavall-web-api`, and product modules may not redeclare frontend contracts.
 - `tavall-web-frontend-spring` is a Web platform adapter over the frontend framework. It depends on the frontend artifact and remains independent of the route API.
 - `tavall-web-app` composes the route API with the frontend when it hosts product pages. Web product modules depend on the route API when they declare Web surfaces.
 
@@ -32,7 +33,8 @@ tavall-test-suite-tools/\
 │   ├── [`cache`](../cache/README.md)\
 │   ├── [`database`](../database/README.md)\
 │   ├── [`runtime`](../runtime/README.md)\
-│   └── **[`web`](README.md) ← This Module**\
+│   ├── **[`web`](README.md) ← This Module**\
+│   └── [`cli`](../cli/README.md)\
 └── [`gradle-plugin`](../../gradle-plugin/README.md)\
 ## Relationships
 
