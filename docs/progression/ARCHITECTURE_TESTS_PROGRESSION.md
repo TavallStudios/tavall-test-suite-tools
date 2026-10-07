@@ -4,7 +4,7 @@
 > **Source of Truth For:** Audited provenance, implementation, publication, and consumer adoption progression for the canonical Tavall Test Suite Tools
 > **Must Not Define:** Written architecture policy (owned by `tavall-docs`), product-specific behavior (owned by consumer repositories)
 > **Current Status:** Production Canonical / Reusable Gradle Plugin & Modules Published / Active Across Consumers
-> **Last Audited Producer Commit:** `cac98e6`
+> **Last Audited Producer Commit:** `fa57fd2ce7d2b885b76c5f63b8caa04a2ac2f168`
 > **Canonical Repository:** `TavallStudios/tavall-test-suite-tools`
 
 ## 1. About
@@ -34,7 +34,8 @@ The division of authority is explicit:
 - **2026-09-19 - Tavall MC adopts canonical architecture suite**: Tavall MC consumer wired to canonical architecture-tests plugin via test suite boundary.
 - **2026-09-22 - aggregate inherited DI marker debt and include compile classpaths (`0f6ca4c`, `81ae78d`, `3e71575`, PR #10)**: Aggregated retired DI marker debt handling and included consumer compile classpaths for comprehensive dependency analysis.
 - **2026-09-23 - progression and lineage consolidation (`working/architecture-tests-progression-lineage-20260923`)**: Added canonical progression documentation, linked authority model to Tavall Docs, and bound repository verification contract.
-- **2026-10-04 - keep DI findings canonical for repeated dependencies and generated access (producer commit `cac98e6`, PR #22)**: A consumer that repeats the same concrete Tavall dependency in a field and constructor, or constructs the same DI-managed type multiple times in one source file, emits one finding for that canonical consumer/type relationship. Generated `@DelegatesTo` `*DependencyAccess` adapters are exempt from the authored direct-map checks because their required map access is emitted by Tavall DI; hand-written consumers remain checked. Regression tests keep both checks active. Java 25 / Gradle 9.6.1 `./gradlew build` passed (68 tasks; 19 tests, zero failures or skips).
+- **2026-10-04 - keep DI findings canonical for repeated dependencies and generated access (producer commit `cac98e6`, PR #22)**: A consumer that repeats the same concrete Tavall dependency in a field and constructor, or constructs the same DI-managed type multiple times in one source file, emits one finding for that canonical consumer/type relationship. Generated `@DelegatesTo` `*DependencyAccess` adapters are exempt from authored direct-map checks because Tavall DI emits their map access; recognized generated adapters may also be injected as typed DI bridges. Hand-written consumers and authored concrete implementation dependencies remain checked. Java 25 / Gradle 9.6.1 `./gradlew build` passed (68 tasks; 19 tests, zero failures or skips).
+- **2026-10-07 - allow generated typed access bridges as consumer dependencies (PR #22 code `fa57fd2`)**: The DI rule excludes only recognized `@DelegatesTo` `*DependencyAccess` adapters from concrete implementation dependency findings. Ordinary Tavall implementation dependencies remain subject to the interface-first rule; generated adapters remain subject to authored-source and direct-map checks. The new regression test verifies a consumer constructor can receive the generated bridge. `modules/di` passed 13 tests; root `./gradlew check` passed 40 tasks (12 executed, 28 up-to-date), with no failures or skips.
 
 ## 4. Module Matrix
 
