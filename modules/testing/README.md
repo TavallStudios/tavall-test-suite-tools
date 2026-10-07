@@ -51,4 +51,5 @@ This module is not independently deployed. Runtime owner: `None`.
 - **Module Type:** `LIBRARY`
 - **Runtime:** `None`
 - **Current source:** Tavall Test Suite Tools PR #8.
+- **Current PR Stack:** [platform integration root #24](https://github.com/TavallStudios/tavall-test-suite-tools/pull/24) → [per-class assessment and test-authoring #8](https://github.com/TavallStudios/tavall-test-suite-tools/pull/8).
 - Repository-level implementation and validation evidence is recorded in [Architecture Tests progression](../../docs/progression/ARCHITECTURE_TESTS_PROGRESSION.md).
