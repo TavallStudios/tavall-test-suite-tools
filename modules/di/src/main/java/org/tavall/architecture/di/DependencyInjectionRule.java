@@ -301,6 +301,9 @@ public final class DependencyInjectionRule implements ArchitectureRule {
         if (target.isInterface() || Modifier.isAbstract(target.getModifiers())) {
             return false;
         }
+        if (isGeneratedDependencyAccess(target)) {
+            return false;
+        }
         if (DiArchitectureSemantics.isExplicitDiException(target)) {
             return false;
         }

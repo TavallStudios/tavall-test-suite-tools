@@ -126,6 +126,17 @@ final class DependencyInjectionRuleTest {
     }
 
     @Test
+    void allowsConsumerToReceiveGeneratedDependencyAccessAdapter() {
+        List<ArchitectureViolation> violations = new DependencyInjectionRule()
+                .validate(ArchitectureContext.fromSystemProperties())
+                .stream()
+                .filter(v -> v.subject().startsWith(GeneratedAccessConsumer.class.getName()))
+                .toList();
+
+        assertTrue(violations.isEmpty(), "Generated DI access adapters are valid consumer dependencies: " + violations);
+    }
+
+    @Test
     void catchesUnmanagedBehavioralComponent() {
         List<ArchitectureViolation> violations = new DependencyInjectionRule()
                 .validate(ArchitectureContext.fromSystemProperties())
@@ -313,6 +324,24 @@ final class DependencyInjectionRuleTest {
         @Override
         public IDependencyMap getDependencyMap() {
             return dependencyMap;
+        }
+    }
+
+    public interface GeneratedAccessConsumerContract {
+        IDependencyAccess dependencyAccess();
+    }
+
+    @DelegatesTo(GeneratedAccessConsumerContract.class)
+    public static final class GeneratedAccessConsumer implements GeneratedAccessConsumerContract {
+        private final GeneratedAccessFixtureDependencyAccess dependencyAccess;
+
+        public GeneratedAccessConsumer(GeneratedAccessFixtureDependencyAccess dependencyAccess) {
+            this.dependencyAccess = dependencyAccess;
+        }
+
+        @Override
+        public IDependencyAccess dependencyAccess() {
+            return dependencyAccess;
         }
     }
 
