@@ -63,7 +63,7 @@ Runtime owner: `None`. The module ships as a Gradle-compatible artifact or test-
 
 | Surface | Sync State | Location | Last Updated | Evidence |
 | --- | --- | --- | --- | --- |
-| GitHub | `PRIMARY` | `TavallStudios/tavall-test-suite-tools/modules/web/README.md` | 2026-09-27 12:59 PM PDT | [PR #16](https://github.com/TavallStudios/tavall-test-suite-tools/pull/16) |
+| GitHub | `PRIMARY` | `TavallStudios/tavall-test-suite-tools/modules/web/README.md` | 2026-10-07 UTC | PR #22 source `3cea8c59` aligns platform/module classification and single module-level findings with the current Web graph. |
 | Notion | `NOT_APPLICABLE` | — | 2026-09-27 12:59 PM PDT | README routing surface; no 1:1 twin is assigned. |
 
 ### Update History
@@ -71,5 +71,6 @@ Runtime owner: `None`. The module ships as a Gradle-compatible artifact or test-
 | Timestamp | Surface | Event | Location | Previous Location | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
 | 2026-09-27 12:59 PM PDT | GitHub | `CREATED` | `TavallStudios/tavall-test-suite-tools/modules/web/README.md` | — | [PR #16](https://github.com/TavallStudios/tavall-test-suite-tools/pull/16) | Added a contextual module README with source-backed ownership and links to the current consumer and validation records. |
+| 2026-10-07 UTC | GitHub | `UPDATED` | `TavallStudios/tavall-test-suite-tools/modules/web/README.md` | 2026-09-27 12:59 PM PDT | PR #22 source `3cea8c59`; root `check` passed | Documented project-level check scope, source-root scanning, and frontend/Spring adapter classification. |
 
 </details>

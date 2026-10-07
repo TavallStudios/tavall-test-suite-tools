@@ -4,7 +4,7 @@
 > **Source of Truth For:** Audited provenance, implementation, publication, and consumer adoption progression for the canonical Tavall Test Suite Tools
 > **Must Not Define:** Written architecture policy (owned by `tavall-docs`), product-specific behavior (owned by consumer repositories)
 > **Current Status:** Production Canonical / Reusable Gradle Plugin & Modules Published / Active Across Consumers
-> **Last Audited Producer Commit:** `fa57fd2ce7d2b885b76c5f63b8caa04a2ac2f168`
+> **Last Audited Producer Commit:** `3cea8c59b282e29ad0c5b054b33c527cfe1e6f65`
 > **Canonical Repository:** `TavallStudios/tavall-test-suite-tools`
 
 ## 1. About
