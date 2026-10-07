@@ -15,22 +15,11 @@
     }
   },
   "directoryType": "PROVENANCE",
-  "entrypoints": {
-    "runs": {
-      "active": "runs/active.json",
-      "history": "runs/history.json"
-    },
-    "threads": "threads/index.json",
-    "work": {
-      "current": "work/current.json",
-      "history": "work/history.json"
-    }
-  },
   "schemaVersion": 1,
   "scope": {
-    "name": "core",
+    "name": "cli",
     "parentRef": "../../../.tavallai/tavallai.json",
-    "path": "modules/core",
+    "path": "modules/cli",
     "repository": "TavallStudios/tavall-test-suite-tools",
     "type": "MODULE_ROOT"
   },

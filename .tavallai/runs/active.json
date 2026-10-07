@@ -5,12 +5,12 @@
     "agentMode": "ROLE",
     "docs": {
       "authority": "github.com/TavallStudios/tavall-docs",
-      "revision": "1e8856c44e9cb8e4c7ef46eb8f6be6d6d860c0f4"
+      "revision": "8532f5659c86bd0263e1fb3741963d89b7f4712e"
     },
     "git": {
       "authority": "github.com/TavallStudios/tavall-test-suite-tools",
       "branch": "working/web-frontend-artifact-ownership-20261003",
-      "headCommit": "d99dfcc9add24e2597c5088cc2e1fef887b9264f",
+      "headCommit": "dc8c4e96a0717819fc4a12a32bbce14aa38a6972",
       "pullRequest": 21
     },
     "ledger": {

@@ -1,18 +1,20 @@
 {
-  "$schema": "https://tavall.org/schemas/tavallai/v1.json",
+  "$schema": "https://raw.githubusercontent.com/TavallStudios/tavall-docs/main/docs/schemas/tavallai-directory.schema.json",
   "authorities": {
     "docs": {
       "authority": "github.com/TavallStudios/tavall-docs",
-      "observedAt": "2026-10-03T09:07:30Z",
-      "ref": "refs/heads/main"
+      "observedAt": "2026-10-07T21:37:29Z",
+      "ref": "refs/heads/main",
+      "revision": "8532f5659c86bd0263e1fb3741963d89b7f4712e"
     },
     "git": {
       "authority": "github.com/TavallStudios/tavall-test-suite-tools",
-      "observedAt": "2026-10-04T00:12:49Z",
+      "observedAt": "2026-10-07T21:37:29Z",
       "ref": "refs/heads/working/web-frontend-artifact-ownership-20261003",
-      "revision": "d99dfcc9add24e2597c5088cc2e1fef887b9264f"
+      "revision": "dc8c4e96a0717819fc4a12a32bbce14aa38a6972"
     }
   },
+  "directoryType": "PROVENANCE",
   "entrypoints": {
     "runs": {
       "active": "runs/active.json",
@@ -24,13 +26,10 @@
       "history": "work/history.json"
     }
   },
-  "parent": {
-    "authority": "repo-root:.tavallai",
-    "observedAt": "2026-10-03T09:07:30Z",
-    "ref": "../../../.tavallai/tavallai.json"
-  },
+  "schemaVersion": 1,
   "scope": {
     "name": "patterns",
+    "parentRef": "../../../.tavallai/tavallai.json",
     "path": "modules/patterns",
     "repository": "TavallStudios/tavall-test-suite-tools",
     "type": "MODULE_ROOT"
