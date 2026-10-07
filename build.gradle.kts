@@ -11,30 +11,25 @@ plugins {
 }
 
 group = "org.tavall"
-version = providers.gradleProperty("tavallVersion").orElse("0.1.0-SNAPSHOT").get()
+version = providers.gradleProperty("tavallArchitectureVersion")
+    .orElse(providers.gradleProperty("tavallVersion"))
+    .orElse("1.1.0")
+    .get()
 
 subprojects {
     group = rootProject.group
     version = rootProject.version
 
     repositories {
-        mavenCentral()
-        val githubToken = providers.environmentVariable("GITHUB_TOKEN").orNull
-        if (!githubToken.isNullOrBlank()) {
-            listOf(
-                "Tavall-Architecture-Tests",
-                "tavall-di",
-                "tavall-registry",
-                "tavall-cache",
-                "tavall-database",
-            ).forEach { repository ->
-                maven("https://maven.pkg.github.com/TavallStudios/$repository") {
-                    name = "github${repository.replace("-", "")}"
-                    credentials {
-                        username = providers.environmentVariable("GITHUB_ACTOR").orElse("github").get()
-                        password = githubToken
-                    }
-                }
+        mavenLocal()
+        val localSnapshots = file("/srv/dev-storage/deps/private/snapshots")
+        if (localSnapshots.isDirectory) {
+            maven(localSnapshots)
+        }
+        mavenCentral {
+            content {
+                excludeGroupByRegex("org\\.tavall(?:\\..*)?")
+                excludeGroupByRegex("com\\.tavall(?:\\..*)?")
             }
         }
     }
@@ -57,23 +52,34 @@ subprojects {
             isPreserveFileTimestamps = false
             isReproducibleFileOrder = true
             manifest.attributes["Implementation-Version"] = project.version.toString()
+            if (project.path.startsWith(":modules:")) {
+                archiveBaseName.set("tavall-architecture-${project.name}")
+            }
         }
     }
 
-    pluginManager.withPlugin("maven-publish") {
-        extensions.configure<PublishingExtension> {
+        pluginManager.withPlugin("maven-publish") {
+            extensions.configure<PublishingExtension> {
             if (project.path.startsWith(":modules:")) {
                 publications.create<MavenPublication>("mavenJava") {
                     from(components["java"])
                     artifactId = "tavall-architecture-${project.name}"
                 }
-            }
-            repositories {
-                val token = providers.environmentVariable("GITHUB_TOKEN")
+                }
+                repositories {
+                    val tavallCiRepository = providers.gradleProperty("tavallCiDependencyRepository")
+                        .orElse(providers.environmentVariable("TAVALL_CI_DEPENDENCY_REPOSITORY"))
+                        .orElse(rootProject.layout.buildDirectory.dir("tavall-ci-dependencies").get().asFile.absolutePath)
+                    maven {
+                        name = "TavallCiDependencies"
+                        url = uri(tavallCiRepository.get())
+                    }
+                    val token = providers.environmentVariable("GITHUB_TOKEN")
+                        .orElse(providers.environmentVariable("GH_TOKEN"))
                 if (token.isPresent) {
                     maven {
                         name = "GitHubPackages"
-                        url = uri("https://maven.pkg.github.com/TavallStudios/Tavall-Architecture-Tests")
+                        url = uri("https://maven.pkg.github.com/TavallStudios/tavall-test-suite-tools")
                         credentials {
                             username = providers.environmentVariable("GITHUB_ACTOR").orElse("github").get()
                             password = token.get()

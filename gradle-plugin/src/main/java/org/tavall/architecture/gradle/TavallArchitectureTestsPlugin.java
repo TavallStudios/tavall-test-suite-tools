@@ -29,9 +29,9 @@ import java.util.Set;
 
 public final class TavallArchitectureTestsPlugin implements Plugin<Project> {
     private static final String PACKAGES_URL =
-            "https://maven.pkg.github.com/TavallStudios/Tavall-Architecture-Tests";
+            "https://maven.pkg.github.com/TavallStudios/tavall-test-suite-tools";
     private static final Set<String> SUPPORTED_MODULES = Set.of(
-            "core", "patterns", "testing", "di", "registry", "cache", "database", "runtime"
+            "core", "patterns", "testing", "di", "registry", "cache", "database", "runtime", "web", "cli"
     );
 
     @Override
@@ -68,6 +68,7 @@ public final class TavallArchitectureTestsPlugin implements Plugin<Project> {
                 task -> {
                     task.setDescription("Materializes the canonical JUnit entrypoint from tavall-architecture-core.");
                     task.setGroup("verification");
+                    task.dependsOn(moduleArtifacts.getBuildDependencies());
                     task.into(project.getLayout().getBuildDirectory().dir("tavall-architecture-tests/classes"));
                     task.from(project.provider(() -> moduleArtifacts.getFiles().stream()
                             .filter(file -> file.getName().startsWith("tavall-architecture-core-"))
@@ -192,6 +193,7 @@ public final class TavallArchitectureTestsPlugin implements Plugin<Project> {
         List<Object> targetClasspath = new ArrayList<>();
         for (ArchitectureTarget target : targets) {
             targetClasspath.add(target.main().getOutput());
+            targetClasspath.add(target.main().getCompileClasspath());
             targetClasspath.add(target.main().getRuntimeClasspath());
         }
         return List.copyOf(targetClasspath);
@@ -356,10 +358,18 @@ public final class TavallArchitectureTestsPlugin implements Plugin<Project> {
     }
 
     private static void configureArchitectureRepository(Project project) {
-        String token = System.getenv("GITHUB_TOKEN");
+        String tavallCiRepository = System.getenv("TAVALL_CI_DEPENDENCY_REPOSITORY");
+        if (tavallCiRepository != null && !tavallCiRepository.isBlank()) {
+            project.getRepositories().maven(repository -> {
+                repository.setName("TavallCiDependencyRepository");
+                repository.setUrl(project.uri(tavallCiRepository));
+            });
+        }
+        String token = githubToken(System.getenv());
         if (token == null || token.isBlank()) {
             return;
         }
+        String packageToken = token;
         String actor = System.getenv("GITHUB_ACTOR");
         if (actor == null || actor.isBlank()) {
             actor = "github";
@@ -370,9 +380,17 @@ public final class TavallArchitectureTestsPlugin implements Plugin<Project> {
             repository.setUrl(project.uri(PACKAGES_URL));
             repository.credentials(PasswordCredentials.class, credentials -> {
                 credentials.setUsername(username);
-                credentials.setPassword(token);
+                credentials.setPassword(packageToken);
             });
         });
+    }
+
+    static String githubToken(Map<String, String> environment) {
+        String token = environment.get("GITHUB_TOKEN");
+        if (token != null && !token.isBlank()) {
+            return token;
+        }
+        return environment.get("GH_TOKEN");
     }
 
     private static String architectureVersion(Project project) {

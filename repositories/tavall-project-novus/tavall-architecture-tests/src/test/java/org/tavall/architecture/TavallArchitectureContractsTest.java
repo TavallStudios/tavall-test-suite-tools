@@ -12,14 +12,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 final class TavallArchitectureContractsTest {
     @Test
-    void sandboxExecutionDoesNotRepublishRepositoryOrAgentJobAuthority() {
-        assertDoesNotThrow(() -> TavallArchitectureContracts.requireExecutionOnlySandboxes(
-                Set.of("sandbox acquire", "sandbox execute", "cloud_sandbox_exec",
+    void executorExecutionDoesNotRepublishSourceOrAgentJobAuthority() {
+        assertDoesNotThrow(() -> TavallArchitectureContracts.requireExecutionOnlyExecutors(
+                Set.of("executor acquire", "executor execute", "cloud_executor_exec",
                         "environment repository git push", "environment repository codex job start")));
-        for (String capability : Set.of("sandbox git", "sandbox github", "sandbox codex",
-                "cloud_sandbox_git", "cloud_sandbox_github_comment_delete", "cloud_sandbox_codex")) {
+        for (String capability : Set.of("sandbox acquire", "cloud_read_sandbox_artifact",
+                "executor git", "executor github", "executor codex", "cloud_executor_github_comment_delete")) {
             assertThrows(IllegalStateException.class,
-                    () -> TavallArchitectureContracts.requireExecutionOnlySandboxes(Set.of(capability)));
+                    () -> TavallArchitectureContracts.requireExecutionOnlyExecutors(Set.of(capability)));
         }
     }
 
@@ -37,7 +37,7 @@ final class TavallArchitectureContractsTest {
     void acceptsNativeMcpAndExactCliProjectionsWithoutWorkspaceIdentity() {
         assertDoesNotThrow(() -> TavallArchitectureContracts.requireMcpProjection(
                 Set.of("cloud_catalog_list", "cloud_status"),
-                Set.of("cloud_catalog_list", "cloud_status", "cloud_create_sandbox"),
+                Set.of("cloud_catalog_list", "cloud_status", "cloud_executor_inspect"),
                 Set.of("environment repository read", "environment repository git status")
         ));
         assertDoesNotThrow(() -> TavallArchitectureContracts.requireCommandProjection(

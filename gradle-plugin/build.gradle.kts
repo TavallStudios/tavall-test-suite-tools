@@ -22,11 +22,15 @@ gradlePlugin {
 }
 
 tasks.test {
+    val tavallCiRepository = providers.gradleProperty("tavallCiDependencyRepository")
+        .orElse(providers.environmentVariable("TAVALL_CI_DEPENDENCY_REPOSITORY"))
+        .orElse(rootProject.layout.buildDirectory.dir("tavall-ci-dependencies").get().asFile.absolutePath)
     dependsOn(
-        ":modules:core:publishToMavenLocal",
-        ":modules:patterns:publishToMavenLocal",
-        ":modules:testing:publishToMavenLocal",
+        ":modules:core:publishAllPublicationsToTavallCiDependenciesRepository",
+        ":modules:patterns:publishAllPublicationsToTavallCiDependenciesRepository",
+        ":modules:testing:publishAllPublicationsToTavallCiDependenciesRepository",
     )
+    environment("TAVALL_CI_DEPENDENCY_REPOSITORY", tavallCiRepository.get())
     systemProperty("tavall.architecture.testVersion", project.version.toString())
     testLogging {
         events("failed", "standardOut", "standardError")
