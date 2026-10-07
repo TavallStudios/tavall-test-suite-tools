@@ -4,6 +4,7 @@ import org.tavall.architecture.core.ArchitectureContext;
 import org.tavall.architecture.core.ArchitectureRule;
 import org.tavall.architecture.core.ArchitectureViolation;
 import org.tavall.architecture.core.ProductionClass;
+import org.tavall.dependency.IDependencyAccess;
 import org.tavall.dependency.annotations.CompositionBoundary;
 import org.tavall.dependency.annotations.DelegatesTo;
 import org.tavall.dependency.annotations.ExplicitNonDi;
@@ -21,7 +22,9 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -126,14 +129,23 @@ public final class DependencyInjectionRule implements ArchitectureRule {
             scanSources(sourceRoot, diManagedSimpleNames, violations);
         }
 
-        return List.copyOf(violations);
+        return uniqueByDebtKey(violations);
+    }
+
+    private static List<ArchitectureViolation> uniqueByDebtKey(List<ArchitectureViolation> violations) {
+        Map<String, ArchitectureViolation> unique = new LinkedHashMap<>();
+        for (ArchitectureViolation violation : violations) {
+            unique.putIfAbsent(violation.debtKey(), violation);
+        }
+        return List.copyOf(unique.values());
     }
 
     private static void auditBehavioralComponent(Class<?> type, List<ArchitectureViolation> violations) {
         if (type.isInterface() || Modifier.isAbstract(type.getModifiers())) {
             return;
         }
-        if (DiArchitectureSemantics.isExplicitDiException(type)
+        if (isGeneratedDependencyAccess(type)
+                || DiArchitectureSemantics.isExplicitDiException(type)
                 || DiArchitectureSemantics.isApprovedCompositionBoundary(type)) {
             return;
         }
@@ -161,6 +173,7 @@ public final class DependencyInjectionRule implements ArchitectureRule {
 
     private static void auditDirectMapUsageInClass(Class<?> type, List<ArchitectureViolation> violations) {
         if (DiArchitectureSemantics.isApprovedCompositionBoundary(type)
+                || isGeneratedDependencyAccess(type)
                 || type.getName().startsWith("org.tavall.dependency.")) {
             return;
         }
@@ -199,33 +212,39 @@ public final class DependencyInjectionRule implements ArchitectureRule {
     }
 
     private static void auditConsumerDependencies(Class<?> consumer, List<ArchitectureViolation> violations) {
-        if (DiArchitectureSemantics.isApprovedCompositionBoundary(consumer)
+        if (isGeneratedDependencyAccess(consumer)
+                || DiArchitectureSemantics.isApprovedCompositionBoundary(consumer)
                 || DiArchitectureSemantics.isExplicitDiException(consumer)
                 || consumer.getName().startsWith("org.tavall.dependency.")) {
             return;
         }
 
+        Set<Class<?>> reportedConcreteDependencies = new HashSet<>();
         for (Field field : consumer.getDeclaredFields()) {
             if (field.isSynthetic() || Modifier.isStatic(field.getModifiers())) {
                 continue;
             }
             Class<?> fieldType = field.getType();
-            if (isProhibitedConcreteDependency(fieldType)) {
+            if (isProhibitedConcreteDependency(fieldType)
+                    && reportedConcreteDependencies.add(fieldType)) {
                 violations.add(new ArchitectureViolation(
                         "concrete-implementation-dependency",
                         consumer.getName() + "->" + fieldType.getName(),
-                        "Consumer depends directly on concrete Tavall implementation " + fieldType.getName() + " instead of an interface contract"
+                        "Consumer references concrete Tavall implementation " + fieldType.getName()
+                                + " through a field or constructor parameter instead of an interface contract"
                 ));
             }
         }
 
         for (Constructor<?> constructor : consumer.getDeclaredConstructors()) {
             for (Class<?> paramType : constructor.getParameterTypes()) {
-                if (isProhibitedConcreteDependency(paramType)) {
+                if (isProhibitedConcreteDependency(paramType)
+                        && reportedConcreteDependencies.add(paramType)) {
                     violations.add(new ArchitectureViolation(
                             "concrete-implementation-dependency",
                             consumer.getName() + "->" + paramType.getName(),
-                            "Consumer constructor parameter depends directly on concrete Tavall implementation " + paramType.getName() + " instead of an interface contract"
+                            "Consumer references concrete Tavall implementation " + paramType.getName()
+                                    + " through a field or constructor parameter instead of an interface contract"
                     ));
                 }
             }
@@ -282,6 +301,9 @@ public final class DependencyInjectionRule implements ArchitectureRule {
         if (target.isInterface() || Modifier.isAbstract(target.getModifiers())) {
             return false;
         }
+        if (isGeneratedDependencyAccess(target)) {
+            return false;
+        }
         if (DiArchitectureSemantics.isExplicitDiException(target)) {
             return false;
         }
@@ -293,6 +315,12 @@ public final class DependencyInjectionRule implements ArchitectureRule {
 
     private static boolean isDependencyMapType(Class<?> type) {
         return type == IDependencyMap.class || type == DependencyMap.class;
+    }
+
+    private static boolean isGeneratedDependencyAccess(Class<?> type) {
+        return type.getSimpleName().endsWith("DependencyAccess")
+                && type.isAnnotationPresent(DelegatesTo.class)
+                && IDependencyAccess.class.isAssignableFrom(type);
     }
 
     private static boolean implementsDomainInterface(Class<?> type) {
@@ -379,7 +407,7 @@ public final class DependencyInjectionRule implements ArchitectureRule {
             String subject = root.relativize(path).toString().replace('\\', '/');
 
             // Skip approved composition boundaries or explicit exceptions
-            if (isSourceCompositionBoundary(subject, source)) {
+            if (isSourceCompositionBoundary(subject, rawSource, source)) {
                 return;
             }
 
@@ -419,8 +447,11 @@ public final class DependencyInjectionRule implements ArchitectureRule {
         }
     }
 
-    private static boolean isSourceCompositionBoundary(String subject, String source) {
+    private static boolean isSourceCompositionBoundary(String subject, String rawSource, String source) {
         if (subject.startsWith("org/tavall/dependency/")) {
+            return true;
+        }
+        if (rawSource.contains("Generated by DependencyAccessSourceLowerer.")) {
             return true;
         }
         if (subject.contains("/bootstrap/") || subject.contains("/composition/")) {
@@ -465,4 +496,3 @@ public final class DependencyInjectionRule implements ArchitectureRule {
         return source.replaceAll("/\\*.*?\\*/", "").replaceAll("//.*", "");
     }
 }
-

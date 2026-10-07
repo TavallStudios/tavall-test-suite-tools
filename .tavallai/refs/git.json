@@ -1,10 +1,10 @@
 {
   "$schema": "https://tavall.org/schemas/tavallai/refs-git/v1.json",
   "authority": "github.com/TavallStudios/tavall-test-suite-tools",
-  "branch": "working/web-frontend-artifact-ownership-20261003",
-  "currentCommit": "dc8c4e96a0717819fc4a12a32bbce14aa38a6972",
+  "branch": "working/deduplicate-di-architecture-violations-20261004",
+  "currentCommit": "60aa9bee998b403175ff159572ab3546a996803b",
   "defaultBranch": "main",
-  "observedAt": "2026-10-07T21:37:29Z",
-  "pullRequest": 21,
-  "ref": "refs/heads/working/web-frontend-artifact-ownership-20261003"
+  "observedAt": "2026-10-07T22:13:12Z",
+  "pullRequest": 22,
+  "ref": "refs/heads/working/deduplicate-di-architecture-violations-20261004"
 }

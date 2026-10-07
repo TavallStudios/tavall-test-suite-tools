@@ -121,9 +121,20 @@ final class TavallArchitectureTestsPluginTest {
                 rejectedResult
         );
 
-        Files.delete(violatingSource);
+        Path fixedProjectDirectory = projectDirectory.resolve("fixed-consumer");
+        Files.createDirectories(fixedProjectDirectory);
         Files.writeString(
-                packageDirectory.resolve("PlayerService.java"),
+                fixedProjectDirectory.resolve("settings.gradle.kts"),
+                "rootProject.name = \"architecture-consumer-fixed\"\n"
+        );
+        Files.writeString(
+                fixedProjectDirectory.resolve("build.gradle.kts"),
+                Files.readString(projectDirectory.resolve("build.gradle.kts"))
+        );
+        Path fixedPackageDirectory = fixedProjectDirectory.resolve("src/main/java/org/tavall/demo");
+        Files.createDirectories(fixedPackageDirectory);
+        Files.writeString(
+                fixedPackageDirectory.resolve("PlayerService.java"),
                 """
                 package org.tavall.demo;
                 public final class PlayerService {
@@ -134,7 +145,7 @@ final class TavallArchitectureTestsPluginTest {
                 """
         );
 
-        BuildResult accepted = runner(projectDirectory)
+        BuildResult accepted = runner(fixedProjectDirectory)
                 .withArguments("clean", "check", "--stacktrace", "-PtavallArchitectureVersion=" + version)
                 .build();
         assertNotNull(accepted.task(":architectureTest"));

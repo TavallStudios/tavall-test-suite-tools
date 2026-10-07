@@ -1,6 +1,8 @@
 {
   "$schema": "https://tavall.org/schemas/tavallai/work-current/v1.json",
-  "activeWorkId": "work-20261003-provenance-rollout",
-  "status": "COMPLETE",
-  "updatedAt": "2026-10-03T09:07:30Z"
+  "activeWorkId": "work-20261003-mc-repository-separation",
+  "description": "Validate the current Web and DI rule graph through the canonical Gradle test-suite plugin.",
+  "status": "ACTIVE",
+  "title": "Tavall-MC repository separation generation",
+  "updatedAt": "2026-10-07T22:13:12Z"
 }

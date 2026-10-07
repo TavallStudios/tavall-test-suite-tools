@@ -4,7 +4,7 @@
 > **Source of Truth For:** Audited provenance, implementation, publication, and consumer adoption progression for the canonical Tavall Test Suite Tools
 > **Must Not Define:** Written architecture policy (owned by `tavall-docs`), product-specific behavior (owned by consumer repositories)
 > **Current Status:** Production Canonical / Reusable Gradle Plugin & Modules Published / Active Across Consumers
-> **Last Audited Producer Commit:** `c37d37e1924c777b3c7d5e0174891af6396cdc86`
+> **Last Audited Producer Commit:** `60aa9bee998b403175ff159572ab3546a996803b`
 > **Canonical Repository:** `TavallStudios/tavall-test-suite-tools`
 
 ## 1. About
@@ -38,6 +38,9 @@ The division of authority is explicit:
 - **2026-10-04 - Web rule producer CI (PR #21)**: Tavall-Web #58's shared-Executor request `85b6c8d9-e54c-49d9-b50a-2422ae6dcb02` exposed the stale frontend/API rule. Producer Tavall CI request `176b1dc7-df2b-4f99-aaf6-b19370f98e11` passed `QUALITY` and `REQUIRED_ALL` on exact producer source `027d2cb4a8219d3e1c82922f5c2986a8e33ebc7b`, Java 25 / Gradle 9.6.1. Evidence SHA-256: `8c75b9c97ba3febdb6d30455eb408730cdd23071c9267f0959b4d4d5c43cbe4c`. Web consumer revalidation and package-backed resolution remain pending.
 - **2026-10-05 - Tavall CLI architecture rule module (PR #23)**: Added the reusable `modules/cli` rule artifact for interface-first commands, `@DelegatesTo`, no constructor-injected collaborators, and no direct dependency-map access. The module follows `tavall-docs` CLI architecture policy; it does not own the CLI framework or product commands.
 - **2026-10-07 - expand Web artifact-boundary regression coverage (PR #21 follow-up)**: Fixtures now cover all eight frontend-owned legacy package prefixes, reject those packages in Web product modules, and keep the `org.tavall.web.api` root in `tavall-web-api`. `:modules:web:test` passed 11 tests and root `./gradlew check` passed 44 actionable tasks on the current PR #21 source. Exact-source consumer validation remains separate.
+- **2026-10-04 - canonicalize repeated DI findings and generated access (PR #22)**: Repeated field/constructor dependencies and same-file construction emit one canonical finding. Generated `@DelegatesTo` `*DependencyAccess` bridges are exempt from authored direct-map checks; hand-authored direct map access and concrete business implementations remain checked.
+- **2026-10-07 - allow generated typed access bridges as DI consumers (PR #22)**: Added regression coverage for injecting generated dependency-access bridges. The prior PR #22 source passed `modules:di` (13 tests) and root `check` (40 tasks); this is historical evidence and does not validate the current combined head.
+- **2026-10-07 - integrate the current Web owner and DI follow-up**: PR #22 now contains PR #21 as an explicit parent and has no net Web rule/source diff relative to that parent. The combined TST source passed root `check` and affected module tests on `60aa9bee`.
 
 ## 4. Module Matrix
 
@@ -65,6 +68,8 @@ The division of authority is explicit:
 
 | Gate | State | Evidence | Next |
 | --- | --- | --- | --- |
-| Producer source, tests, and repository quality | PASS_LOCAL | On the current PR #21 candidate, `:modules:web:test` passed 11 tests and root `./gradlew check` passed 44 actionable tasks. The code/test change is commit `c37d37e`; exact current-head rerun is recorded separately from hosted Tavall CI. | Rerun root `check` after current documentation/provenance updates; exact-source hosted TCI remains separate. |
-| Web exact-source consumer architecture/build | PENDING_CURRENT_SOURCE | Web PR #59 app tests, `bootJar`, and artifact verification passed with TST PR #22 source `345b914`, but its Web rule copy reported 436 architecture findings, including 58 package-ownership findings that contradict the current Web DESIGN and PR #21's existing rule. | Compose the current PR #21 rule with PR #22's DI rule, then rerun Web #59 against that exact producer head. |
-| Package-backed Web consumer | PENDING | No current producer package publication was performed for this update. | Validate package-backed resolution independently after the producer source and consumer architecture gates pass. |
+| Producer source, module tests, and repository check | PASS_LOCAL | Exact combined PR #22 source `60aa9bee998b403175ff159572ab3546a996803b`: root `./gradlew check` succeeded with 44 actionable tasks (6 executed, 38 up-to-date). The affected Web, DI, and Gradle plugin tests were rerun; reports show 34 tests total (Web 11, DI 13, CLI 5, Gradle plugin 5), 0 failures/errors/skips. | Submit exact combined source through hosted Tavall CI. |
+| Job-scoped artifact resolution | PARTIAL_LOCAL | Root check published `core` and `patterns` to `build/tavall-ci-dependencies`. The current PR #22 TestKit fixture still has a Maven Local path; PR #8 separately validates the job-scoped repository integration but is not yet in this branch. | Integrate PR #8 into the producer root and rerun the combined source. |
+| Hosted Tavall CI | NOT_RUN_CURRENT_HEAD | No hosted Tavall CI request was executed for `60aa9bee`. | Run the canonical exact-source executor after the source graph is complete. |
+| Web exact-source consumer architecture/build | PENDING_CURRENT_SOURCE | Web PR #59 previously reported 436 findings with the stale TST #22 source `345b914`, including 58 frontend package-ownership findings that PR #21 handles. | Pin `60aa9bee` in Web and rerun its architecture gate. |
+| Package-backed Web consumer | PENDING | No producer artifact was published to GitHub Packages or a hosted internal package authority for this source. | Validate package-backed resolution separately after hosted producer and Web architecture gates pass. |
