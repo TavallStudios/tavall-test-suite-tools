@@ -12,6 +12,7 @@ This repository provides Tavall Studios' canonical executable architecture-test 
 
 - Canonical rule API and source/class analysis engine.
 - Optional rule modules for naming/source structure, DI, registries, cache, databases, runtime support, and web.
+- Direct JUnit 5 test-authoring rules and per-class architecture assessments from the same canonical engine.
 - Gradle plugin `org.tavall.architecture-tests` for consumer task configuration.
 - Migration-debt support that tolerates known findings temporarily while failing on new or obsolete entries.
 
@@ -49,7 +50,7 @@ plugins {
 }
 
 architectureTests {
-    modules.set(listOf("core", "patterns", "di"))
+    modules.set(listOf("core", "patterns", "testing", "di"))
     targetProjects.set(listOf(":backend-api", ":runtime", ":discord"))
 }
 
@@ -62,12 +63,45 @@ The plugin registers `architectureTest`, runs it on JUnit Platform, compiles eve
 
 Selecting a rule module changes executable verification. `core` is always included; other rule modules add rules through the `ArchitectureRule` service-provider contract. The consumer root `check` must depend on the repository testing suite.
 
+## Per-class architecture assessment
+
+The canonical engine produces a result for every discovered `org.tavall.*` production class, including classes with no findings. Each result records selected rule families, source evidence, contributing findings, and a `PASS`, `DEBT`, or `FAIL` status with a diagnostic score. The score does not override blocking findings: any unbaselined blocking finding fails the class.
+
+The JUnit `architectureTest` task and direct `architectureAnalyze` task use the same `ArchitectureAssessmentEngine`. Source-backed findings include exact file and line/column evidence where available. The machine-readable report is written to:
+
+```text
+build/reports/tavall-architecture/architecture-report.json
+```
+
+## Continuous authoring loop
+
+Run the canonical analyzer after a coherent Java production or test edit:
+
+```text
+./gradlew :<test-suite>:architectureAnalyze
+```
+
+In an interactive durable workspace, Gradle continuous mode reruns analysis as sources change:
+
+```text
+./gradlew :<test-suite>:architectureAnalyze --continuous
+```
+
+Repository/root `check` remains the authoritative completion gate.
+
+## Canonical test authoring
+
+The `testing` module checks the mechanically reliable portion of Tavall's canonical testing policy for behavior-bearing production types. It checks direct JUnit 5 package/path identity, behavior-oriented test method names, assertion evidence, no mocking of the subject under test, production-equivalent DI composition for managed behavior, and valid Java test sources. It does not claim static inspection proves infrastructure realism or scenario completeness.
+
+`generateTavallTestScaffold -PtavallTestClass=<production FQCN>` can create the initial test shape. The generated scaffold deliberately fails and remains rejected until real behavior assertions replace its incomplete marker.
+
 ## Project Structure
 
 tavall-test-suite-tools/\
 ├── modules/\
 │   ├── [core](modules/core/README.md)\
 │   ├── [patterns](modules/patterns/README.md)\
+│   ├── [testing](modules/testing/README.md)\
 │   ├── [di](modules/di/README.md)\
 │   ├── [registry](modules/registry/README.md)\
 │   ├── [cache](modules/cache/README.md)\

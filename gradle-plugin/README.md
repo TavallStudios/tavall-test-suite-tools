@@ -7,6 +7,9 @@ Owns Gradle plugin `org.tavall.architecture-tests` and consumer task/configurati
 ### Owns
 - Plugin extension and Gradle task registration/configuration.
 - Connecting selected rule artifacts to a consumer's real production targets.
+- `architectureTest` as the repository/root completion gate.
+- `architectureAnalyze` for the same per-class assessment engine during authoring.
+- `generateTavallTestScaffold` as a fail-closed direct-test starting point.
 
 ### Does Not Own
 - Architecture rule implementation or consumer root-check policy.
@@ -17,6 +20,7 @@ tavall-test-suite-tools/\
 ├── modules/\
 │   ├── [`core`](../modules/core/README.md)\
 │   ├── [`patterns`](../modules/patterns/README.md)\
+│   ├── [`testing`](../modules/testing/README.md)\
 │   ├── [`di`](../modules/di/README.md)\
 │   ├── [`registry`](../modules/registry/README.md)\
 │   ├── [`cache`](../modules/cache/README.md)\
@@ -30,6 +34,8 @@ tavall-test-suite-tools/\
 | --- | --- |
 | [`modules/core`](../modules/core/README.md) | Uses the shared rule contract and execution engine. |
 | [`modules/runtime`](../modules/runtime/README.md) | Provides reusable runtime-oriented test support. |
+
+`architectureTest` inspects configured production classes and source. `architectureAnalyze` runs that same rule engine directly and includes test-source evidence; it does not replace the final `check` gate. Generated test scaffolds intentionally fail until real behavior assertions replace the incomplete marker.
 
 ## Documentation
 
@@ -49,7 +55,7 @@ Runtime owner: `None`. The module ships as a Gradle-compatible artifact or test-
 
 - **Module Type:** `TOOLING`
 - **Runtime:** `None`
-- **Current PR Stack:** [platform integration root #15](https://github.com/TavallStudios/tavall-test-suite-tools/pull/15), [artifact version alignment #14](https://github.com/TavallStudios/tavall-test-suite-tools/pull/14), [test-authoring enforcement #8](https://github.com/TavallStudios/tavall-test-suite-tools/pull/8); documentation update: [PR #16](https://github.com/TavallStudios/tavall-test-suite-tools/pull/16).
+- **Current PR Stack:** [platform integration root #24](https://github.com/TavallStudios/tavall-test-suite-tools/pull/24) → [per-class assessment and test-authoring #8](https://github.com/TavallStudios/tavall-test-suite-tools/pull/8).
 - Repository-specific development guide: [CONTRIBUTING.md](../CONTRIBUTING.md).
 
 

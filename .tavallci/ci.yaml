@@ -16,12 +16,14 @@ modules:
   - gradle-plugin
   - modules/core
   - modules/patterns
+  - modules/testing
   - modules/di
   - modules/registry
   - modules/cache
   - modules/database
   - modules/runtime
   - modules/web
+  - modules/cli
 
 dependencies:
   - kind: source

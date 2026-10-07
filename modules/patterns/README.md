@@ -16,6 +16,7 @@ tavall-test-suite-tools/\
 ├── modules/\
 │   ├── [`core`](../core/README.md)\
 │   ├── **[`patterns`](README.md) ← This Module**\
+│   ├── [`testing`](../testing/README.md)\
 │   ├── [`di`](../di/README.md)\
 │   ├── [`registry`](../registry/README.md)\
 │   ├── [`cache`](../cache/README.md)\
@@ -49,7 +50,7 @@ Runtime owner: `None`. The module ships as a Gradle-compatible artifact or test-
 
 - **Module Type:** `LIBRARY`
 - **Runtime:** `None`
-- **Current PR Stack:** [platform integration root #15](https://github.com/TavallStudios/tavall-test-suite-tools/pull/15), [artifact version alignment #14](https://github.com/TavallStudios/tavall-test-suite-tools/pull/14), [test-authoring enforcement #8](https://github.com/TavallStudios/tavall-test-suite-tools/pull/8); documentation update: [PR #16](https://github.com/TavallStudios/tavall-test-suite-tools/pull/16).
+- **Current PR Stack:** [platform integration root #24](https://github.com/TavallStudios/tavall-test-suite-tools/pull/24) → [per-class assessment and test-authoring #8](https://github.com/TavallStudios/tavall-test-suite-tools/pull/8).
 - Repository-specific development guide: [CONTRIBUTING.md](../../CONTRIBUTING.md).
 
 
