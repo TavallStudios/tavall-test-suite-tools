@@ -245,6 +245,8 @@ final class TavallArchitectureTestsPluginTest {
         return GradleRunner.create()
                 .withProjectDir(projectDirectory.toFile())
                 .withPluginClasspath()
+                .withTestKitDir(projectDirectory.resolve(".gradle-test-kit").toFile())
+                .withArguments("--no-daemon")
                 .forwardOutput();
     }
 }

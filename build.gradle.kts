@@ -21,6 +21,11 @@ subprojects {
     version = rootProject.version
 
     repositories {
+        mavenLocal()
+        val localSnapshots = file("/srv/dev-storage/deps/private/snapshots")
+        if (localSnapshots.isDirectory) {
+            maven(localSnapshots)
+        }
         mavenCentral {
             content {
                 excludeGroupByRegex("org\\.tavall(?:\\..*)?")
