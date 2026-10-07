@@ -22,6 +22,8 @@ This module checks the Web ownership boundary documented by Tavall Web PR #58's 
 
 The reusable rule checks those source/artifact owners. Product-specific route behavior stays with its product module, and this module must not require the frontend library to depend on the route API merely because a Java package retains the historical `.api` segment.
 
+Project-level checks run once per module even when consumers provide several source roots. Java source ownership checks still inspect every source root. The executable Web application must depend on `tavall-web-api`; the reusable frontend model and Spring renderer do not.
+
 ## Repository Structure
 
 tavall-test-suite-tools/\
@@ -64,7 +66,7 @@ Runtime owner: `None`. The module ships as a Gradle-compatible artifact or test-
 
 - **Module Type:** `LIBRARY`
 - **Runtime:** `None`
-- **Current PR Stack:** Draft [PR #21](https://github.com/TavallStudios/tavall-test-suite-tools/pull/21) on `working/web-frontend-artifact-ownership-20261003`; existing suite and platform integration PR history remains linked in the repository Progression.
+- **Current PR Stack:** [platform integration root #24](https://github.com/TavallStudios/tavall-test-suite-tools/pull/24) → [Web artifact ownership #21](https://github.com/TavallStudios/tavall-test-suite-tools/pull/21).
 - Repository-specific development guide: [CONTRIBUTING.md](../../CONTRIBUTING.md).
 
 
@@ -75,7 +77,7 @@ Runtime owner: `None`. The module ships as a Gradle-compatible artifact or test-
 
 | Surface | Sync State | Location | Last Updated | Evidence |
 | --- | --- | --- | --- | --- |
-| GitHub | `PRIMARY` | `TavallStudios/tavall-test-suite-tools/modules/web/README.md` | 2026-10-04 12:08 AM UTC | [PR #21](https://github.com/TavallStudios/tavall-test-suite-tools/pull/21) |
+| GitHub | `PRIMARY` | `TavallStudios/tavall-test-suite-tools/modules/web/README.md` | 2026-10-07 UTC | PR #21 source `526e807`; Web package ownership and source-root behavior align with the current DESIGN. |
 | Notion | `NOT_APPLICABLE` | — | 2026-09-27 12:59 PM PDT | README routing surface; no 1:1 twin is assigned. |
 
 ### Update History
@@ -86,5 +88,6 @@ Runtime owner: `None`. The module ships as a Gradle-compatible artifact or test-
 | 2026-10-03 4:49 PM PDT | GitHub | `UPDATED` | `TavallStudios/tavall-test-suite-tools/modules/web/README.md` | Same path | [PR #21](https://github.com/TavallStudios/tavall-test-suite-tools/pull/21) | Recorded the API/frontend artifact rule boundary and linked its current Tavall Web DESIGN owners. |
 | 2026-10-03 4:57 PM PDT | GitHub | `UPDATED` | `TavallStudios/tavall-test-suite-tools/modules/web/README.md` | Same path | Tavall CI request `6438a2b6-9481-4b17-af2c-dbc57d3adf94`; [PR #21](https://github.com/TavallStudios/tavall-test-suite-tools/pull/21) | Recorded exact-source producer validation and the remaining Web consumer/package gates. |
 | 2026-10-04 12:08 AM UTC | GitHub | `UPDATED` | `TavallStudios/tavall-test-suite-tools/modules/web/README.md` | Same path | Tavall CI request `176b1dc7-df2b-4f99-aaf6-b19370f98e11`; [PR #21](https://github.com/TavallStudios/tavall-test-suite-tools/pull/21) | Recorded producer validation on the exact current Web rule source and consumer/package gates. |
+| 2026-10-07 UTC | GitHub | `UPDATED` | `TavallStudios/tavall-test-suite-tools/modules/web/README.md` | Same path | PR #21 source `526e807`; root `check` passed 44 actionable tasks and `modules:web:test` passed 11 tests | Listed the eight frontend-owned compatibility package prefixes and recorded current module-level check behavior. |
 
 </details>
