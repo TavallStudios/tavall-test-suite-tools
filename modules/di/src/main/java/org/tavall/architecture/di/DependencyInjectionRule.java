@@ -465,4 +465,3 @@ public final class DependencyInjectionRule implements ArchitectureRule {
         return source.replaceAll("/\\*.*?\\*/", "").replaceAll("//.*", "");
     }
 }
-

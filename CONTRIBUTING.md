@@ -16,7 +16,12 @@ This repository is the canonical executable source for Tavall Studios architectu
 3. **Rule Verification Requirements**:
    - Every reusable-rule or consumer-wiring change must include executable evidence that the repository/root `check` path reaches the testing suite's `architectureTest`, that configured production targets are compiled and inspected, and that the intended rule can fail against a real compiled consumer fixture.
 
-4. **Git Workflow**:
+4. **Architecture Authoring Loop**:
+   - After each coherent Java production or test edit, run the affected test suite's `architectureAnalyze` task for fast feedback; the repository/root `check` remains the completion gate.
+   - Use `generateTavallTestScaffold -PtavallTestClass=<production FQCN>` only as a fail-closed starting point. Replace the incomplete marker with real behavior assertions before accepting the test.
+   - Keep source locations and blocking findings visible. A diagnostic score does not turn an unbaselined blocking finding into a pass.
+
+5. **Git Workflow**:
    - Create a focused topic branch (`working/<topic>`) targeting `main`.
    - Validate locally with `./gradlew check` (Java 25).
    - Follow standard review flow with visible review or Owner Self-Review records before promotion.

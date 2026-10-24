@@ -277,4 +277,3 @@ final class DependencyInjectionRuleTest {
         private final ValidSampleServiceImpl implementation = null;
     }
 }
-

@@ -4,6 +4,7 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":modules:core"))
     testImplementation(gradleTestKit())
     testImplementation("org.junit.jupiter:junit-jupiter:5.11.4")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.11.4")
@@ -27,6 +28,7 @@ tasks.test {
     dependsOn(
         ":modules:core:publishAllPublicationsToTavallCiDependenciesRepository",
         ":modules:patterns:publishAllPublicationsToTavallCiDependenciesRepository",
+        ":modules:testing:publishAllPublicationsToTavallCiDependenciesRepository",
     )
     environment("TAVALL_CI_DEPENDENCY_REPOSITORY", tavallCiRepository.get())
     systemProperty("tavall.architecture.testVersion", project.version.toString())
