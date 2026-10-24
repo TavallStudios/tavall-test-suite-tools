@@ -79,23 +79,21 @@ final class TavallArchitectureTestsPluginTest {
         String version = architectureVersion();
 
         Files.writeString(projectDirectory.resolve("settings.gradle.kts"), "rootProject.name = \"architecture-consumer-smoke\"\n");
-        Files.writeString(
-                projectDirectory.resolve("build.gradle.kts"),
-                """
+        String buildScript = """
                 plugins {
                     java
                     id("org.tavall.architecture-tests")
                 }
 
-                repositories {
-                    mavenCentral()
-                }
+                @@TAVALL_MAVEN_REPOSITORIES@@
 
                 architectureTests {
                     modules.set(listOf("core", "patterns"))
                 }
-                """
-        );
+                """;
+        Files.writeString(
+                projectDirectory.resolve("build.gradle.kts"),
+                buildScript.replace("@@TAVALL_MAVEN_REPOSITORIES@@", mavenRepositoriesBlock()));
         Path packageDirectory = projectDirectory.resolve("src/main/java/org/tavall/demo");
         Files.createDirectories(packageDirectory);
         Path violatingSource = packageDirectory.resolve("LegacyRepository.java");
@@ -167,17 +165,13 @@ final class TavallArchitectureTestsPluginTest {
         Files.createDirectories(testSuite);
         Files.writeString(serviceA.resolve("build.gradle.kts"), "plugins { java }\n");
         Files.writeString(serviceB.resolve("build.gradle.kts"), "plugins { java }\n");
-        Files.writeString(
-                testSuite.resolve("build.gradle.kts"),
-                """
+        String testSuiteBuild = """
                 plugins {
                     java
                     id("org.tavall.architecture-tests")
                 }
 
-                repositories {
-                    mavenCentral()
-                }
+                @@TAVALL_MAVEN_REPOSITORIES@@
 
                 architectureTests {
                     modules.set(listOf("core", "patterns"))
@@ -187,8 +181,10 @@ final class TavallArchitectureTestsPluginTest {
                 rootProject.tasks.named("check") {
                     dependsOn(tasks.named("check"))
                 }
-                """
-        );
+                """;
+        Files.writeString(
+                testSuite.resolve("build.gradle.kts"),
+                testSuiteBuild.replace("@@TAVALL_MAVEN_REPOSITORIES@@", mavenRepositoriesBlock()));
         Path violatingPackage = serviceA.resolve("src/main/java/org/tavall/demo/a");
         Path validPackage = serviceB.resolve("src/main/java/org/tavall/demo/b");
         Files.createDirectories(violatingPackage);
@@ -228,23 +224,21 @@ final class TavallArchitectureTestsPluginTest {
             throws IOException {
         String version = architectureVersion();
         Files.writeString(projectDirectory.resolve("settings.gradle.kts"), "rootProject.name = \"authoring-smoke\"\n");
-        Files.writeString(
-                projectDirectory.resolve("build.gradle.kts"),
-                """
+        String buildScript = """
                 plugins {
                     java
                     id("org.tavall.architecture-tests")
                 }
 
-                repositories {
-                    mavenCentral()
-                }
+                @@TAVALL_MAVEN_REPOSITORIES@@
 
                 architectureTests {
                     modules.set(listOf("core", "testing"))
                 }
-                """
-        );
+                """;
+        Files.writeString(
+                projectDirectory.resolve("build.gradle.kts"),
+                buildScript.replace("@@TAVALL_MAVEN_REPOSITORIES@@", mavenRepositoriesBlock()));
         Path packageDirectory = projectDirectory.resolve("src/main/java/org/tavall/demo");
         Files.createDirectories(packageDirectory);
         Files.writeString(
@@ -319,12 +313,24 @@ final class TavallArchitectureTestsPluginTest {
         return version;
     }
 
+    private static String mavenRepositoriesBlock() {
+        return """
+                repositories {
+                    val tavallMavenMirror = System.getenv("TAVALL_CI_MAVEN_MIRROR_REPOSITORY")
+                    if (tavallMavenMirror.isNullOrBlank()) {
+                        mavenCentral()
+                    } else {
+                        maven { url = uri(tavallMavenMirror) }
+                    }
+                }
+                """;
+    }
+
     private static GradleRunner runner(Path projectDirectory) {
         return GradleRunner.create()
                 .withProjectDir(projectDirectory.toFile())
                 .withPluginClasspath()
-                .withTestKitDir(projectDirectory.resolve(".gradle-test-kit").toFile())
-                .withArguments("--no-daemon")
+                // Keep Tooling API cache state outside the JUnit @TempDir project tree.
                 .forwardOutput();
     }
 }
