@@ -18,6 +18,7 @@ tavall-test-suite-tools/\
 ├── modules/\
 │   ├── [`core`](../core/README.md)\
 │   ├── [`patterns`](../patterns/README.md)\
+│   ├── [`testing`](../testing/README.md)\
 │   ├── **[`di`](README.md) ← This Module**\
 │   ├── [`registry`](../registry/README.md)\
 │   ├── [`cache`](../cache/README.md)\

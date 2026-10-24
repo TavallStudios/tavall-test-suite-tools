@@ -16,6 +16,7 @@ modules:
   - gradle-plugin
   - modules/core
   - modules/patterns
+  - modules/testing
   - modules/di
   - modules/registry
   - modules/cache
@@ -45,6 +46,13 @@ dependencies:
     identity: TavallStudios/tavall-registry
     role: SHARED_DEP
     selector: required-source
+
+primaryPlugins:
+  - pluginId: org.tavall.architecture-tests
+    pluginVersion: 1.1.0
+    versionProperty: tavallArchitectureVersion
+    pluginProjectPath: :gradle-plugin
+    substitutions: "org.tavall:tavall-architecture-core=:modules:core"
 
 requiredChecks:
   - quality
