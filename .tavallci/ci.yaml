@@ -47,6 +47,13 @@ dependencies:
     role: SHARED_DEP
     selector: required-source
 
+primaryPlugins:
+  - pluginId: org.tavall.architecture-tests
+    pluginVersion: 1.1.0
+    versionProperty: tavallArchitectureVersion
+    pluginProjectPath: :gradle-plugin
+    substitutions: "org.tavall:tavall-architecture-core=:modules:core"
+
 requiredChecks:
   - quality
 
