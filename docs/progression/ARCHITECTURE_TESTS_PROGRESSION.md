@@ -1,9 +1,11 @@
 # Tavall Test Suite Tools Progression
 
+> **Current execution status (2026-10-28):** Reusable rule/plugin source remains available for replacement setup. Consumer architecture-test execution and architecture-only Tavall CI gates are suspended organization-wide; regular consumer testing remains active. Historical consumer passes below are not current acceptance.
+
 > **Document Type:** System Progression
 > **Source of Truth For:** Audited provenance, implementation, publication, and consumer adoption progression for the canonical Tavall Test Suite Tools
 > **Must Not Define:** Written architecture policy (owned by `tavall-docs`), product-specific behavior (owned by consumer repositories)
-> **Current Status:** Production Canonical / Reusable Gradle Plugin & Modules Published / Active Across Consumers
+> **Current Status:** Production Canonical / Reusable Gradle Plugin & Modules Retained / Consumer Execution Suspended Organization-Wide
 > **Last Audited Producer Commit:** `0609adbc9257914be5758d3c14743fcccd9a1926`
 > **Canonical Repository:** `TavallStudios/tavall-test-suite-tools`
 
@@ -11,7 +13,7 @@
 
 Tracks the evolution and adoption of Tavall Studios' canonical executable architecture-testing layer, from its extraction out of Project Novus to its modular distribution and consumer integration model.
 
-`tavall-docs` owns written architecture policy; this repository implements reusable, mechanically enforceable subsets of that policy as a Gradle plugin and test modules that consumer repositories execute during their own verification cycles.
+`tavall-docs` owns written architecture policy; this repository retains reusable, mechanically enforceable rule and test-tool source for replacement setup. Consumer repositories do not execute the architecture suite while the organization-wide suspension is active.
 
 ## 2. Authority & Consumer Model
 
@@ -19,7 +21,7 @@ The division of authority is explicit:
 
 - **Written Policy (`tavall-docs`)**: Canonical written architecture rules, design standards, module boundaries, and quality requirements.
 - **Executable Enforcement (`tavall-test-suite-tools`)**: Reusable ArchUnit and AST-based rule implementations packaged as Gradle plugin and modular libraries.
-- **Consumer Execution (Consumer Repositories)**: Each repository's canonical testing suite (`*-test-suite`, or root verification suite) applies `org.tavall.architecture-tests` and declares its production targets.
+- **Consumer Execution (Consumer Repositories)**: Suspended organization-wide as of 2026-10-28. Consumers use regular Tavall unit/contract/integration/runtime/quality/E2E procedures and do not apply this plugin or declare architecture-only CI gates until replacement setup is approved.
 - **Historical Provenance (`repositories/`, `manifest/sources.json`)**: Preserved historical snapshots and imported commit hashes from Project Novus. These provide provenance only, not execution authority.
 
 ## 3. Progression Timeline
@@ -57,7 +59,7 @@ The division of authority is explicit:
 
 1. **Standalone Suite Validation**: Root `./gradlew check` validates all rule modules and executes Gradle plugin functional tests.
 2. **Package Publication Gate**: All artifacts publish to `TavallStudios/tavall-test-suite-tools` on GitHub Packages with verified POMs and Gradle metadata.
-3. **Consumer Verification Gate**: Consumers execute `architectureTest` through their repository test-suite boundary; failure blocks local CI and PR promotion.
+3. **Consumer Verification Gate**: Suspended organization-wide. Preserve regular consumer tests; do not require `architectureTest` or an architecture-only Tavall CI check.
 4. **Temporary Debt Gate**: Deprecated or legacy patterns permitted temporarily via `config/architecture-debt.txt`; non-matching entries cause immediate build failure to prevent debt creep.
 
 ## Current Validation State
