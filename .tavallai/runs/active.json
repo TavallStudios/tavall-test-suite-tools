@@ -9,9 +9,9 @@
     },
     "git": {
       "authority": "github.com/TavallStudios/tavall-test-suite-tools",
-      "branch": "working/web-frontend-artifact-ownership-20261003",
-      "headCommit": "dc8c4e96a0717819fc4a12a32bbce14aa38a6972",
-      "pullRequest": 21
+      "branch": "working/deduplicate-di-architecture-violations-20261004",
+      "headCommit": "60aa9bee998b403175ff159572ab3546a996803b",
+      "pullRequest": 22
     },
     "ledger": {
       "agentId": "codex-tavall-orchestrator",

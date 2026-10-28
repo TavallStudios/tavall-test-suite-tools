@@ -1,11 +1,15 @@
 # modules/di
 
+> Reusable rule source only: consumer architecture-test execution is suspended organization-wide until replacement setup is approved.
+
 Owns reusable Tavall dependency-injection architecture checks.
 
 ## Responsibility
 
 ### Owns
 - DI-specific architecture rule implementation.
+- One concrete-dependency debt finding per consumer and implementation type, even when that dependency appears in both a field and constructor; the underlying interface-first violation remains enforced.
+- Generated `@DelegatesTo` `*DependencyAccess` adapters may be injected as typed DI bridges and may hold the owning dependency map. The generated adapter marker distinguishes them from authored behavior; authored consumers remain checked for direct map access and concrete implementation dependencies, and the exception applies only to a recognized generated adapter target.
 
 ### Does Not Own
 - Tavall DI runtime behavior or consumer object composition.
@@ -62,7 +66,7 @@ Runtime owner: `None`. The module ships as a Gradle-compatible artifact or test-
 
 | Surface | Sync State | Location | Last Updated | Evidence |
 | --- | --- | --- | --- | --- |
-| GitHub | `PRIMARY` | `TavallStudios/tavall-test-suite-tools/modules/di/README.md` | 2026-09-27 12:59 PM PDT | [PR #16](https://github.com/TavallStudios/tavall-test-suite-tools/pull/16) |
+| GitHub | `PRIMARY` | `TavallStudios/tavall-test-suite-tools/modules/di/README.md` | 2026-10-07 UTC | Updated in existing [PR #22](https://github.com/TavallStudios/tavall-test-suite-tools/pull/22). |
 | Notion | `NOT_APPLICABLE` | — | 2026-09-27 12:59 PM PDT | README routing surface; no 1:1 twin is assigned. |
 
 ### Update History
@@ -70,5 +74,6 @@ Runtime owner: `None`. The module ships as a Gradle-compatible artifact or test-
 | Timestamp | Surface | Event | Location | Previous Location | Evidence | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
 | 2026-09-27 12:59 PM PDT | GitHub | `CREATED` | `TavallStudios/tavall-test-suite-tools/modules/di/README.md` | — | [PR #16](https://github.com/TavallStudios/tavall-test-suite-tools/pull/16) | Added a contextual module README with source-backed ownership and links to the current consumer and validation records. |
+| 2026-10-07 UTC | GitHub | `UPDATED` | `TavallStudios/tavall-test-suite-tools/modules/di/README.md` | Same path | [PR #22](https://github.com/TavallStudios/tavall-test-suite-tools/pull/22) | Documented generated DI access adapters as valid consumer dependencies while keeping the interface-first and authored direct-map rules active. |
 
 </details>

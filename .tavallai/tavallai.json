@@ -3,15 +3,15 @@
   "authorities": {
     "docs": {
       "authority": "github.com/TavallStudios/tavall-docs",
-      "observedAt": "2026-10-07T21:37:29Z",
+      "observedAt": "2026-10-07T22:13:12Z",
       "ref": "refs/heads/main",
       "revision": "8532f5659c86bd0263e1fb3741963d89b7f4712e"
     },
     "git": {
       "authority": "github.com/TavallStudios/tavall-test-suite-tools",
-      "observedAt": "2026-10-07T21:37:29Z",
-      "ref": "refs/heads/working/web-frontend-artifact-ownership-20261003",
-      "revision": "dc8c4e96a0717819fc4a12a32bbce14aa38a6972"
+      "observedAt": "2026-10-07T22:13:12Z",
+      "ref": "refs/heads/working/deduplicate-di-architecture-violations-20261004",
+      "revision": "60aa9bee998b403175ff159572ab3546a996803b"
     },
     "ledger": {
       "authority": "tavall-agent-ledger",

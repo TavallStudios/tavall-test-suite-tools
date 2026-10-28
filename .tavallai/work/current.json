@@ -1,8 +1,8 @@
 {
   "$schema": "https://tavall.org/schemas/tavallai/work-current/v1.json",
   "activeWorkId": "work-20261003-mc-repository-separation",
-  "description": "Align reusable Web architecture rules to the accepted API/frontend artifact ownership boundary.",
+  "description": "Reconcile reusable Web and DI architecture rules under the current Tavall Test Suite Tools staging root.",
   "status": "ACTIVE",
   "title": "Tavall-MC repository separation generation",
-  "updatedAt": "2026-10-07T21:37:29Z"
+  "updatedAt": "2026-10-07T22:13:12Z"
 }

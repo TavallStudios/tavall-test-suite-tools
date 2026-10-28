@@ -1,6 +1,8 @@
 {
   "$schema": "https://tavall.org/schemas/tavallai/work-current/v1.json",
-  "activeWorkId": "work-20261003-provenance-rollout",
-  "status": "COMPLETE",
-  "updatedAt": "2026-10-03T09:07:30Z"
+  "activeWorkId": "work-20261003-mc-repository-separation",
+  "description": "Reconcile generated dependency-access bridge findings with Tavall DI ownership.",
+  "status": "ACTIVE",
+  "title": "Tavall-MC repository separation generation",
+  "updatedAt": "2026-10-07T22:13:12Z"
 }
