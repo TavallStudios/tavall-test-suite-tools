@@ -14,7 +14,9 @@ import java.nio.file.Path;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 final class TavallArchitectureTestsPluginTest {
@@ -31,7 +33,7 @@ final class TavallArchitectureTestsPluginTest {
     }
 
     @Test
-    void applyingPluginRegistersExecutableArchitectureGate() {
+    void applyingPluginRegistersOptInArchitectureTasks() {
         Project project = ProjectBuilder.builder().build();
         project.getPluginManager().apply(TavallArchitectureTestsPlugin.class);
 
@@ -40,7 +42,7 @@ final class TavallArchitectureTestsPluginTest {
         assertNotNull(project.getTasks().findByName("architectureAnalyze"));
         assertTrue(project.getTasks().getByName("architectureAnalyze") instanceof org.gradle.api.tasks.JavaExec);
         assertNotNull(project.getTasks().findByName("generateTavallTestScaffold"));
-        assertTrue(project.getTasks().getByName("check").getTaskDependencies()
+        assertFalse(project.getTasks().getByName("check").getTaskDependencies()
                 .getDependencies(project.getTasks().getByName("check"))
                 .contains(project.getTasks().getByName("architectureTest")));
     }
@@ -99,8 +101,14 @@ final class TavallArchitectureTestsPluginTest {
         Path violatingSource = packageDirectory.resolve("LegacyRepository.java");
         Files.writeString(violatingSource, "package org.tavall.demo; public final class LegacyRepository {}\n");
 
-        BuildResult rejected = runner(projectDirectory)
+        BuildResult regularCheck = runner(projectDirectory)
                 .withArguments("clean", "check", "--stacktrace", "-PtavallArchitectureVersion=" + version)
+                .build();
+        assertNotNull(regularCheck.task(":check"));
+        assertNull(regularCheck.task(":architectureTest"));
+
+        BuildResult rejected = runner(projectDirectory)
+                .withArguments("clean", "architectureTest", "--stacktrace", "-PtavallArchitectureVersion=" + version)
                 .buildAndFail();
         assertNotNull(rejected.task(":architectureTest"));
         assertEquals(TaskOutcome.FAILED, rejected.task(":architectureTest").getOutcome());
@@ -138,11 +146,11 @@ final class TavallArchitectureTestsPluginTest {
                 """
         );
         BuildResult accepted = runner(fixedProjectDirectory)
-                .withArguments("clean", "check", "--stacktrace", "-PtavallArchitectureVersion=" + version)
+                .withArguments("clean", "architectureTest", "--stacktrace", "-PtavallArchitectureVersion=" + version)
                 .build();
         assertNotNull(accepted.task(":architectureTest"));
+        assertNull(accepted.task(":check"));
         assertEquals(TaskOutcome.SUCCESS, accepted.task(":architectureTest").getOutcome());
-        assertEquals(TaskOutcome.SUCCESS, accepted.task(":check").getOutcome());
     }
 
     @Test
@@ -193,8 +201,14 @@ final class TavallArchitectureTestsPluginTest {
         Files.writeString(violatingSource, "package org.tavall.demo.a; public final class LegacyRepository {}\n");
         Files.writeString(validPackage.resolve("PlayerService.java"), "package org.tavall.demo.b; public final class PlayerService {}\n");
 
-        BuildResult rejected = runner(projectDirectory)
+        BuildResult regularCheck = runner(projectDirectory)
                 .withArguments("clean", "check", "--stacktrace", "-PtavallArchitectureVersion=" + version)
+                .build();
+        assertNotNull(regularCheck.task(":check"));
+        assertNull(regularCheck.task(":test-suite:architectureTest"));
+
+        BuildResult rejected = runner(projectDirectory)
+                .withArguments("clean", ":test-suite:architectureTest", "--stacktrace", "-PtavallArchitectureVersion=" + version)
                 .buildAndFail();
         assertEquals(TaskOutcome.FAILED, rejected.task(":test-suite:architectureTest").getOutcome());
         assertEquals(TaskOutcome.SUCCESS, rejected.task(":service-a:classes").getOutcome());
@@ -212,11 +226,10 @@ final class TavallArchitectureTestsPluginTest {
         Files.delete(violatingSource);
         Files.writeString(violatingPackage.resolve("InventoryService.java"), "package org.tavall.demo.a; public final class InventoryService {}\n");
         BuildResult accepted = runner(projectDirectory)
-                .withArguments("clean", "check", "--stacktrace", "-PtavallArchitectureVersion=" + version)
+                .withArguments("clean", ":test-suite:architectureTest", "--stacktrace", "-PtavallArchitectureVersion=" + version)
                 .build();
         assertEquals(TaskOutcome.SUCCESS, accepted.task(":test-suite:architectureTest").getOutcome());
-        assertEquals(TaskOutcome.SUCCESS, accepted.task(":test-suite:check").getOutcome());
-        assertEquals(TaskOutcome.SUCCESS, accepted.task(":check").getOutcome());
+        assertNull(accepted.task(":check"));
     }
 
     @Test

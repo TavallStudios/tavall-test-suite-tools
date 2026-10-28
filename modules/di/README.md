@@ -1,5 +1,7 @@
 # modules/di
 
+> Reusable rule source only: consumer architecture-test execution is suspended organization-wide until replacement setup is approved.
+
 Owns reusable Tavall dependency-injection architecture checks.
 
 ## Responsibility
