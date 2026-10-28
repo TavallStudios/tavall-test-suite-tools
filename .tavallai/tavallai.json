@@ -1,0 +1,64 @@
+{
+  "$schema": "https://raw.githubusercontent.com/TavallStudios/tavall-docs/main/docs/schemas/tavallai-directory.schema.json",
+  "authorities": {
+    "docs": {
+      "authority": "github.com/TavallStudios/tavall-docs",
+      "observedAt": "2026-10-07T21:37:29Z",
+      "ref": "refs/heads/main",
+      "revision": "8532f5659c86bd0263e1fb3741963d89b7f4712e"
+    },
+    "git": {
+      "authority": "github.com/TavallStudios/tavall-test-suite-tools",
+      "observedAt": "2026-10-07T21:37:29Z",
+      "ref": "refs/heads/working/web-frontend-artifact-ownership-20261003",
+      "revision": "dc8c4e96a0717819fc4a12a32bbce14aa38a6972"
+    },
+    "ledger": {
+      "authority": "tavall-agent-ledger",
+      "observedAt": "2026-10-03T09:07:30Z",
+      "ref": "active-worker-claims"
+    },
+    "memory": {
+      "authority": "tavall-ai-memory",
+      "observedAt": "2026-10-03T09:07:30Z",
+      "ref": "memory-plane"
+    }
+  },
+  "directoryType": "PROVENANCE",
+  "entrypoints": {
+    "refs": {
+      "cloud": "refs/cloud.json",
+      "git": "refs/git.json",
+      "memory": "memory/refs.json"
+    },
+    "runs": {
+      "active": "runs/active.json",
+      "history": "runs/history.json"
+    },
+    "threads": "threads/index.json",
+    "work": {
+      "current": "work/current.json",
+      "history": "work/history.json"
+    }
+  },
+  "modules": [
+    "modules/core",
+    "modules/patterns",
+    "modules/di",
+    "modules/registry",
+    "modules/cache",
+    "modules/database",
+    "modules/runtime",
+    "modules/web",
+    "modules/cli",
+    "gradle-plugin"
+  ],
+  "schemaVersion": 1,
+  "scope": {
+    "name": "tavall-test-suite-tools",
+    "path": ".",
+    "repository": "TavallStudios/tavall-test-suite-tools",
+    "type": "REPOSITORY_ROOT"
+  },
+  "version": 1
+}

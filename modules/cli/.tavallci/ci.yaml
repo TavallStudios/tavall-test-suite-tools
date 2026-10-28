@@ -11,6 +11,28 @@ build:
 resources:
   mode: SYSTEM
 
+dependencies:
+  - kind: source
+    identity: TavallStudios/tavall-cli
+    role: SHARED_DEP
+    selector: required-source
+    substitutions: "org.tavall:tavall-cli=:,org.tavall:tavall-cli-api=:tavall-cli-api"
+  - kind: source
+    identity: TavallStudios/tavall-concurrency
+    role: SHARED_DEP
+    selector: required-source
+    substitutions: "org.tavall:tavall-concurrency=:"
+  - kind: source
+    identity: TavallStudios/tavall-eventbus
+    role: SHARED_DEP
+    selector: required-source
+    substitutions: "org.tavall:tavall-eventbus=:"
+  - kind: source
+    identity: TavallStudios/tavall-reflection
+    role: SHARED_DEP
+    selector: required-source
+    substitutions: "org.tavall:tavall-reflection=:"
+
 artifacts:
   - name: tavall-architecture-cli
     path: build/libs/tavall-architecture-cli-1.1.0.jar

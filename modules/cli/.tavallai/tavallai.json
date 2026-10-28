@@ -1,0 +1,27 @@
+{
+  "$schema": "https://raw.githubusercontent.com/TavallStudios/tavall-docs/main/docs/schemas/tavallai-directory.schema.json",
+  "authorities": {
+    "docs": {
+      "authority": "github.com/TavallStudios/tavall-docs",
+      "observedAt": "2026-10-07T21:37:29Z",
+      "ref": "refs/heads/main",
+      "revision": "8532f5659c86bd0263e1fb3741963d89b7f4712e"
+    },
+    "git": {
+      "authority": "github.com/TavallStudios/tavall-test-suite-tools",
+      "observedAt": "2026-10-07T21:37:29Z",
+      "ref": "refs/heads/working/web-frontend-artifact-ownership-20261003",
+      "revision": "dc8c4e96a0717819fc4a12a32bbce14aa38a6972"
+    }
+  },
+  "directoryType": "PROVENANCE",
+  "schemaVersion": 1,
+  "scope": {
+    "name": "cli",
+    "parentRef": "../../../.tavallai/tavallai.json",
+    "path": "modules/cli",
+    "repository": "TavallStudios/tavall-test-suite-tools",
+    "type": "MODULE_ROOT"
+  },
+  "version": 1
+}
