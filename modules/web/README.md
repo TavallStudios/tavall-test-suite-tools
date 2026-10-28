@@ -1,5 +1,7 @@
 # modules/web
 
+> Reusable rule source only: consumer architecture-test execution is suspended organization-wide until replacement setup is approved.
+
 Owns reusable Tavall Web architecture checks.
 
 ## Responsibility
