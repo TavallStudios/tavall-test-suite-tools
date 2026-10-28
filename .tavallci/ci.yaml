@@ -16,18 +16,25 @@ modules:
   - gradle-plugin
   - modules/core
   - modules/patterns
+  - modules/testing
   - modules/di
   - modules/registry
   - modules/cache
   - modules/database
   - modules/runtime
   - modules/web
+  - modules/cli
 
 dependencies:
   - kind: source
     identity: TavallStudios/tavall-cache
     role: SHARED_DEP
     selector: required-source
+  - kind: source
+    identity: TavallStudios/tavall-custom-enum-java
+    role: SHARED_DEP
+    selector: required-source
+    substitutions: "org.tavall:tavall-custom-enum-java=:"
   - kind: source
     identity: TavallStudios/tavall-database
     role: SHARED_DEP
@@ -44,6 +51,18 @@ dependencies:
     identity: TavallStudios/tavall-registry
     role: SHARED_DEP
     selector: required-source
+  - kind: artifact
+    identity: tavall-public-maven-mirror
+    role: MAVEN_MIRROR
+    selector: sha256
+    digest: ee130d9805f198ef9e91d88dda0dc1c13a6c2233b948646842c92a5cf3f16496
+
+primaryPlugins:
+  - pluginId: org.tavall.architecture-tests
+    pluginVersion: 1.1.0
+    versionProperty: tavallArchitectureVersion
+    pluginProjectPath: :gradle-plugin
+    substitutions: "org.tavall:tavall-architecture-core=:modules:core"
 
 requiredChecks:
   - quality

@@ -2,6 +2,8 @@
 
 This repository provides Tavall Studios' canonical executable architecture-test tooling as reusable, opt-in Java rules and a Gradle plugin. `tavall-docs` owns the written architecture policy; this repository turns reusable parts of that policy into tests that consumer repositories actually execute.
 
+> **Current execution status (2026-10-28):** Consumer architecture-test execution is suspended organization-wide while the replacement suite is prepared. Keep these reusable sources and their own TestKit/unit tests. The plugin's `architectureTest` task is opt-in and is not attached to a consumer's regular `check`; do not add it as a current consumer CI gate.
+
 ## Why Tavall Test Suite Tools
 
 - Reuse the same architecture checks across repositories without copying rule source.
@@ -12,18 +14,19 @@ This repository provides Tavall Studios' canonical executable architecture-test 
 
 - Canonical rule API and source/class analysis engine.
 - Optional rule modules for naming/source structure, DI, registries, cache, databases, runtime support, and web.
+- Direct JUnit 5 test-authoring rules and per-class architecture assessments from the same canonical engine.
 - Gradle plugin `org.tavall.architecture-tests` for consumer task configuration.
 - Migration-debt support that tolerates known findings temporarily while failing on new or obsolete entries.
 
-## Quick Start
+## Consumer setup (future; currently suspended)
 
-Add the plugin and selected rule modules to a repository testing suite. The [Consumer contract](#consumer-contract) below shows package resolution and the required Gradle wiring.
+After replacement setup is approved, add the plugin and selected rule modules to a repository testing suite. The future consumer contract below shows package resolution and the explicit task wiring.
 
-## Consumer Contract
+## Future Consumer Contract
 
 Do not copy canonical test source into consumers. A repository's canonical testing suite (`*-test-suite`, or the equivalent root verification suite for a single-module repository) consumes this repository's published Gradle plugin/modules and feeds the real production modules it owns through that boundary.
 
-The testing suite is the repository-level architecture verification boundary. Production subprojects do not each need to apply and execute a duplicate architecture gate.
+When consumer execution is re-enabled, the testing suite is the repository-level architecture verification boundary. During suspension, consumers use regular Tavall checks and do not apply this plugin.
 
 Resolve the plugin marker from GitHub Packages in `settings.gradle.kts`:
 
@@ -49,18 +52,47 @@ plugins {
 }
 
 architectureTests {
-    modules.set(listOf("core", "patterns", "di"))
+    modules.set(listOf("core", "patterns", "testing", "di"))
     targetProjects.set(listOf(":backend-api", ":runtime", ":discord"))
 }
 
-rootProject.tasks.named("check") {
-    dependsOn(tasks.named("check"))
-}
 ```
 
-The plugin registers `architectureTest`, runs it on JUnit Platform, compiles every configured target, and points the canonical engine at the target modules' compiled production classes, Java source roots, and runtime classpaths. If `targetProjects` is empty, the plugin preserves the single-project fallback.
+The plugin registers an explicit `architectureTest` task, runs it on JUnit Platform, compiles every configured target, and points the canonical engine at the target modules' compiled production classes, Java source roots, and runtime classpaths. It does not attach that task to `check`. If `targetProjects` is empty, the plugin preserves the single-project fallback.
 
-Selecting a rule module changes executable verification. `core` is always included; other rule modules add rules through the `ArchitectureRule` service-provider contract. The consumer root `check` must depend on the repository testing suite.
+Selecting a rule module changes explicit architecture-task behavior. `core` is always included; other rule modules add rules through the `ArchitectureRule` service-provider contract. Consumer root `check` remains on the regular Tavall test procedure during the suspension.
+
+## Per-class architecture assessment
+
+The canonical engine produces a result for every discovered `org.tavall.*` production class, including classes with no findings. Each result records selected rule families, source evidence, contributing findings, and a `PASS`, `DEBT`, or `FAIL` status with a diagnostic score. The score does not override blocking findings: any unbaselined blocking finding fails the class.
+
+The JUnit `architectureTest` task and direct `architectureAnalyze` task use the same `ArchitectureAssessmentEngine`. Source-backed findings include exact file and line/column evidence where available. The machine-readable report is written to:
+
+```text
+build/reports/tavall-architecture/architecture-report.json
+```
+
+## Continuous authoring loop
+
+Run the canonical analyzer after a coherent Java production or test edit:
+
+```text
+./gradlew :<test-suite>:architectureAnalyze
+```
+
+In an interactive durable workspace, Gradle continuous mode reruns analysis as sources change:
+
+```text
+./gradlew :<test-suite>:architectureAnalyze --continuous
+```
+
+Repository/root `check` remains the authoritative completion gate.
+
+## Canonical test authoring
+
+The `testing` module checks the mechanically reliable portion of Tavall's canonical testing policy for behavior-bearing production types. It checks direct JUnit 5 package/path identity, behavior-oriented test method names, assertion evidence, no mocking of the subject under test, production-equivalent DI composition for managed behavior, and valid Java test sources. It does not claim static inspection proves infrastructure realism or scenario completeness.
+
+`generateTavallTestScaffold -PtavallTestClass=<production FQCN>` can create the initial test shape. The generated scaffold deliberately fails and remains rejected until real behavior assertions replace its incomplete marker.
 
 ## Project Structure
 
@@ -68,6 +100,7 @@ tavall-test-suite-tools/\
 ├── modules/\
 │   ├── [core](modules/core/README.md)\
 │   ├── [patterns](modules/patterns/README.md)\
+│   ├── [testing](modules/testing/README.md)\
 │   ├── [di](modules/di/README.md)\
 │   ├── [registry](modules/registry/README.md)\
 │   ├── [cache](modules/cache/README.md)\
@@ -117,8 +150,9 @@ Each non-comment line is `<rule-id>|<subject>`. Matching current findings are te
 
 ## Validation Boundary
 
-For this repository, root `check` depends on each module/plugin `check`. For consumers, the test-suite `check` depends on `architectureTest`, and root `check` must depend on that suite. Product/runtime simulations remain owned by the consumer repository.
+Consumer architecture-test execution is suspended organization-wide as of 2026-10-28. Consumers continue regular Tavall unit, contract, integration, runtime, quality, and E2E procedures; they must not add this plugin, invoke `architectureTest` or `architectureAnalyze`, or make those tasks part of `.tavallci` until replacement setup is explicitly re-enabled.
 
+The retained plugin and rule modules remain available for future replacement setup. This repository's own regular `./gradlew check` validates its plugin and module behavior; the current TestKit suite does not launch architecture assessment tasks. Historical consumer wiring guidance elsewhere in this README is reference material, not active execution guidance during the suspension.
 ## Publishing and Tavall CI
 
 Every module and the Gradle plugin publish as Gradle-compatible Maven artifacts for public distribution. GitHub Packages publication is a publication surface; it is not Tavall CI's internal source-resolution authority.
