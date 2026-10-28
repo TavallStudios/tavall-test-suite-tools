@@ -1,12 +1,12 @@
 # Contributing to Tavall Test Suite Tools
 
-This repository is the canonical executable source for Tavall Studios architecture tests.
+This repository owns the reusable source for Tavall Studios architecture-test tooling. Consumer execution is suspended organization-wide as of 2026-10-28 while the replacement suite is prepared.
 
 ## Development & Contribution Guidelines
 
 1. **Policy Authority**:
    - Written architecture and documentation policy is governed organization-wide by [`TavallStudios/tavall-docs`](https://github.com/TavallStudios/tavall-docs), including `docs/quality/GIT_WORKFLOW.md` and relevant architecture standards.
-   - This repository implements the mechanically enforceable subset of that policy as automated JUnit Platform architecture tests and a reusable Gradle plugin.
+   - This repository retains the reusable JUnit Platform rules and Gradle plugin that may support a future replacement suite; the current consumer gate is not active.
 
 2. **Source Layout & Executable Boundary**:
    - `modules/` and `gradle-plugin/` are the maintained executable architecture-test sources.
@@ -14,7 +14,9 @@ This repository is the canonical executable source for Tavall Studios architectu
    - Do not copy reusable canonical rule source into consumer repositories. Consumer repositories consume the published Gradle plugin and declare the production projects inspected by their repository test suite (`*-test-suite`).
 
 3. **Rule Verification Requirements**:
-   - Every reusable-rule or consumer-wiring change must include executable evidence that the repository/root `check` path reaches the testing suite's `architectureTest`, that configured production targets are compiled and inspected, and that the intended rule can fail against a real compiled consumer fixture.
+   - Keep the regular repository `./gradlew check` green, including this plugin's unit/TestKit tests.
+   - TestKit may invoke `architectureTest` explicitly inside an isolated plugin-contract fixture. The plugin must not attach it to the normal `check` lifecycle.
+   - Do not add consumer plugin dependencies, `architectureTest` wiring, or Tavall CI architecture checks while the organization-wide suspension is active. Replacement consumer acceptance requires updated canonical Docs policy and a fresh owner-scoped rollout.
 
 4. **Git Workflow**:
    - Create a focused topic branch (`working/<topic>`) targeting `main`.

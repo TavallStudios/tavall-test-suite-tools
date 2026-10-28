@@ -2,6 +2,8 @@
 
 Owns Gradle plugin `org.tavall.architecture-tests` and consumer task/configuration wiring.
 
+**Execution status (2026-10-28):** The organization-wide architecture-test suite is suspended. The plugin and explicit `architectureTest` task remain available for replacement-suite setup, but the plugin no longer adds that task to the normal `check` lifecycle and consumers must not configure it until canonical Docs policy re-enables the suite.
+
 ## Responsibility
 
 ### Owns
