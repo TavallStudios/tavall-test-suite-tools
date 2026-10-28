@@ -151,8 +151,9 @@ Each non-comment line is `<rule-id>|<subject>`. Matching current findings are te
 
 ## Validation Boundary
 
-For this repository, root `check` depends on each module/plugin `check`. For consumers, the test-suite `check` depends on `architectureTest`, and root `check` must depend on that suite. Product/runtime simulations remain owned by the consumer repository.
+Consumer architecture-test execution is suspended organization-wide as of 2026-10-28. Consumers continue regular Tavall unit, contract, integration, runtime, quality, and E2E procedures; they must not add this plugin, invoke `architectureTest` or `architectureAnalyze`, or make those tasks part of `.tavallci` until replacement setup is explicitly re-enabled.
 
+The retained plugin and rule modules remain available for future replacement setup. This repository's own regular `./gradlew check` validates its plugin and module behavior; the current TestKit suite does not launch architecture assessment tasks. Historical consumer wiring guidance elsewhere in this README is reference material, not active execution guidance during the suspension.
 ## Publishing and Tavall CI
 
 Every module and the Gradle plugin publish as Gradle-compatible Maven artifacts for public distribution. GitHub Packages publication is a publication surface; it is not Tavall CI's internal source-resolution authority.
