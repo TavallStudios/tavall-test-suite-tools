@@ -113,7 +113,6 @@ public final class TavallArchitectureTestsPlugin implements Plugin<Project> {
                 }
         );
 
-        project.getTasks().named("check").configure(task -> task.dependsOn(architectureTest));
         project.afterEvaluate(ignored -> configureRuleModules(project, extension, moduleArtifacts, runtime));
 
         project.getGradle().projectsEvaluated(ignored -> {

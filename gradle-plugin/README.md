@@ -2,12 +2,14 @@
 
 Owns Gradle plugin `org.tavall.architecture-tests` and consumer task/configuration wiring.
 
+**Execution status (2026-10-28):** Consumer architecture-test execution is suspended organization-wide. The plugin remains reusable setup source; `architectureTest` is opt-in and is not attached to regular `check`.
+
 ## Responsibility
 
 ### Owns
 - Plugin extension and Gradle task registration/configuration.
 - Connecting selected rule artifacts to a consumer's real production targets.
-- `architectureTest` as the repository/root completion gate.
+- The explicit `architectureTest` task for future replacement-suite execution; it is not a current consumer gate.
 - `architectureAnalyze` for the same per-class assessment engine during authoring.
 - `generateTavallTestScaffold` as a fail-closed direct-test starting point.
 

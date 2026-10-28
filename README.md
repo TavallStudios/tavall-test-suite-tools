@@ -2,6 +2,8 @@
 
 This repository provides Tavall Studios' canonical executable architecture-test tooling as reusable, opt-in Java rules and a Gradle plugin. `tavall-docs` owns the written architecture policy; this repository turns reusable parts of that policy into tests that consumer repositories actually execute.
 
+> **Current execution status (2026-10-28):** Consumer architecture-test execution is suspended organization-wide while the replacement suite is prepared. Keep these reusable sources and their own TestKit/unit tests. The plugin's `architectureTest` task is opt-in and is not attached to a consumer's regular `check`; do not add it as a current consumer CI gate.
+
 ## Why Tavall Test Suite Tools
 
 - Reuse the same architecture checks across repositories without copying rule source.
@@ -16,15 +18,15 @@ This repository provides Tavall Studios' canonical executable architecture-test 
 - Gradle plugin `org.tavall.architecture-tests` for consumer task configuration.
 - Migration-debt support that tolerates known findings temporarily while failing on new or obsolete entries.
 
-## Quick Start
+## Consumer setup (future; currently suspended)
 
-Add the plugin and selected rule modules to a repository testing suite. The [Consumer contract](#consumer-contract) below shows package resolution and the required Gradle wiring.
+After replacement setup is approved, add the plugin and selected rule modules to a repository testing suite. The future consumer contract below shows package resolution and the explicit task wiring.
 
-## Consumer Contract
+## Future Consumer Contract
 
 Do not copy canonical test source into consumers. A repository's canonical testing suite (`*-test-suite`, or the equivalent root verification suite for a single-module repository) consumes this repository's published Gradle plugin/modules and feeds the real production modules it owns through that boundary.
 
-The testing suite is the repository-level architecture verification boundary. Production subprojects do not each need to apply and execute a duplicate architecture gate.
+When consumer execution is re-enabled, the testing suite is the repository-level architecture verification boundary. During suspension, consumers use regular Tavall checks and do not apply this plugin.
 
 Resolve the plugin marker from GitHub Packages in `settings.gradle.kts`:
 
@@ -54,14 +56,11 @@ architectureTests {
     targetProjects.set(listOf(":backend-api", ":runtime", ":discord"))
 }
 
-rootProject.tasks.named("check") {
-    dependsOn(tasks.named("check"))
-}
 ```
 
-The plugin registers `architectureTest`, runs it on JUnit Platform, compiles every configured target, and points the canonical engine at the target modules' compiled production classes, Java source roots, and runtime classpaths. If `targetProjects` is empty, the plugin preserves the single-project fallback.
+The plugin registers an explicit `architectureTest` task, runs it on JUnit Platform, compiles every configured target, and points the canonical engine at the target modules' compiled production classes, Java source roots, and runtime classpaths. It does not attach that task to `check`. If `targetProjects` is empty, the plugin preserves the single-project fallback.
 
-Selecting a rule module changes executable verification. `core` is always included; other rule modules add rules through the `ArchitectureRule` service-provider contract. The consumer root `check` must depend on the repository testing suite.
+Selecting a rule module changes explicit architecture-task behavior. `core` is always included; other rule modules add rules through the `ArchitectureRule` service-provider contract. Consumer root `check` remains on the regular Tavall test procedure during the suspension.
 
 ## Per-class architecture assessment
 

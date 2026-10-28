@@ -1,5 +1,7 @@
 # Contributing to Tavall Test Suite Tools
 
+> **Current consumer policy (2026-10-28):** Architecture-test execution is suspended organization-wide. Keep the reusable tool and its own regular tests; do not wire the plugin or its tasks into consumer `check`/CI until replacement setup is approved.
+
 This repository is the canonical executable source for Tavall Studios architecture tests.
 
 ## Development & Contribution Guidelines
@@ -14,10 +16,10 @@ This repository is the canonical executable source for Tavall Studios architectu
    - Do not copy reusable canonical rule source into consumer repositories. Consumer repositories consume the published Gradle plugin and declare the production projects inspected by their repository test suite (`*-test-suite`).
 
 3. **Rule Verification Requirements**:
-   - Every reusable-rule or consumer-wiring change must include executable evidence that the repository/root `check` path reaches the testing suite's `architectureTest`, that configured production targets are compiled and inspected, and that the intended rule can fail against a real compiled consumer fixture.
+   - Reusable-rule changes must include TestKit or module-test evidence for the rule behavior. During the organization-wide suspension, consumer wiring must keep `architectureTest` out of ordinary `check`; TestKit may invoke it explicitly to verify the reusable tool.
 
 4. **Architecture Authoring Loop**:
-   - After each coherent Java production or test edit, run the affected test suite's `architectureAnalyze` task for fast feedback; the repository/root `check` remains the completion gate.
+   - After Java production or test edits in this repository, run the regular repository tests. `architectureAnalyze` and `architectureTest` remain explicit tool capabilities for replacement-suite setup and are not current consumer acceptance gates.
    - Use `generateTavallTestScaffold -PtavallTestClass=<production FQCN>` only as a fail-closed starting point. Replace the incomplete marker with real behavior assertions before accepting the test.
    - Keep source locations and blocking findings visible. A diagnostic score does not turn an unbaselined blocking finding into a pass.
 
