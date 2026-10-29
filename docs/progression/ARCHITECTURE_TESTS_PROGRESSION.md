@@ -3,7 +3,7 @@
 > **Document Type:** System Progression
 > **Source of Truth For:** Audited provenance, implementation, publication, and consumer adoption progression for the canonical Tavall Test Suite Tools
 > **Must Not Define:** Written architecture policy (owned by `tavall-docs`), product-specific behavior (owned by consumer repositories)
-> **Current Status:** Production Canonical / Reusable Gradle Plugin & Modules Published / Active Across Consumers
+> **Current Status:** Reusable Gradle Plugin & Modules Retained / Consumer Execution Suspended Organization-Wide Pending Replacement Setup
 > **Last Audited Producer Commit:** `3e71575`
 > **Canonical Repository:** `TavallStudios/tavall-test-suite-tools`
 
@@ -11,7 +11,7 @@
 
 Tracks the evolution and adoption of Tavall Studios' canonical executable architecture-testing layer, from its extraction out of Project Novus to its modular distribution and consumer integration model.
 
-`tavall-docs` owns written architecture policy; this repository implements reusable, mechanically enforceable subsets of that policy as a Gradle plugin and test modules that consumer repositories execute during their own verification cycles.
+`tavall-docs` owns written architecture policy; this repository retains reusable, mechanically enforceable rule source as a Gradle plugin and test modules. Consumer repositories no longer execute this suite while the organization-wide suspension is active.
 
 ## 2. Authority & Consumer Model
 
@@ -19,7 +19,7 @@ The division of authority is explicit:
 
 - **Written Policy (`tavall-docs`)**: Canonical written architecture rules, design standards, module boundaries, and quality requirements.
 - **Executable Enforcement (`tavall-test-suite-tools`)**: Reusable ArchUnit and AST-based rule implementations packaged as Gradle plugin and modular libraries.
-- **Consumer Execution (Consumer Repositories)**: Each repository's canonical testing suite (`*-test-suite`, or root verification suite) applies `org.tavall.architecture-tests` and declares its production targets.
+- **Consumer Execution (Consumer Repositories)**: Suspended organization-wide as of 2026-10-28. Consumers use their regular Tavall unit/contract/integration/runtime/quality/E2E procedures and must not apply `org.tavall.architecture-tests` or declare its CI gate until replacement setup is accepted.
 - **Historical Provenance (`repositories/`, `manifest/sources.json`)**: Preserved historical snapshots and imported commit hashes from Project Novus. These provide provenance only, not execution authority.
 
 ## 3. Progression Timeline
@@ -34,10 +34,11 @@ The division of authority is explicit:
 - **2026-09-19 - Tavall MC adopts canonical architecture suite**: Tavall MC consumer wired to canonical architecture-tests plugin via test suite boundary.
 - **2026-09-22 - aggregate inherited DI marker debt and include compile classpaths (`0f6ca4c`, `81ae78d`, `3e71575`, PR #10)**: Aggregated retired DI marker debt handling and included consumer compile classpaths for comprehensive dependency analysis.
 - **2026-09-23 - progression and lineage consolidation (`working/architecture-tests-progression-lineage-20260923`)**: Added canonical progression documentation, linked authority model to Tavall Docs, and bound repository verification contract.
+- **2026-10-28 - organization-wide execution suspension and current-head audit**: 29 focused Draft PRs plus three existing staging-root PRs are open; all 32 remain Draft and none is merged. The current candidate-head scan removes or reclassifies all 24 consumer architecture-test classes; the Cloud public-capability regression remains a regular contract test. The producer retains 23 architecture-related source files as tool-owner tests for replacement setup. A 32-PR metadata diff audit found no root `.tavallci/ci.yaml` deletion and no `.tavallcd` path changes; architecture-specific check entries are edited in place, and the only nested CI descriptor removal is with the retired Minecraft architecture-suite module. Regular Tavall consumer checks remain the active path. Local regular tests passed in TST #26, TAI #80, Cloud #476, Minecraft #385, Web #88, and Web Content #18; CI #44's test-suite check passed while root `check` stopped before tests on missing DI/filesystem packages. Hosted TCI, deployment, and main/staging acceptance remain unclaimed.
 
 ## 4. Module Matrix
 
-| Module | Published Artifact | Enforcement Scope |
+| Module | Published Artifact | Retained Source Capability (not currently active in consumer CI) |
 | --- | --- | --- |
 | `gradle-plugin` | `org.tavall.architecture-tests` | Gradle integration, task registration (`architectureTest`), target class and source resolution |
 | `modules/core` | `org.tavall:tavall-architecture-core` | Core type hygiene, forbidden imports, package boundary assertions |
@@ -52,5 +53,5 @@ The division of authority is explicit:
 
 1. **Standalone Suite Validation**: Root `./gradlew check` validates all rule modules and executes Gradle plugin functional tests.
 2. **Package Publication Gate**: All artifacts publish to `TavallStudios/tavall-test-suite-tools` on GitHub Packages with verified POMs and Gradle metadata.
-3. **Consumer Verification Gate**: Consumers execute `architectureTest` through their repository test-suite boundary; failure blocks local CI and PR promotion.
+3. **Consumer Verification Gate**: Suspended. Do not require `architectureTest` or an architecture-only Tavall CI check. Consumers continue regular JUnit/unit/contract/integration/runtime/quality/E2E testing.
 4. **Temporary Debt Gate**: Deprecated or legacy patterns permitted temporarily via `config/architecture-debt.txt`; non-matching entries cause immediate build failure to prevent debt creep.
